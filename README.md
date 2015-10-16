@@ -7,4 +7,4 @@ Simple "GUI" for operating James Yonan's [Brenda](https://github.com/jamesyonan/
 
 Follow Todd Mcintosh's [directions](http://brendapro.com/forum/viewtopic.php?f=0&t=76&sid=e6bc8c5335e35bab0605da5a5a6f9965) to get Brenda working on Windows, then copy this Python file into the "c:\brenda_master" folder. Double click it to get it running.
 
-**WARNING, THIS IS MY FIRST PYTHON PROJECT SO IT COULD HAVE SERIOUS ISSUES WHICH COULD POTENTIALLY COST YOU MONEY. PLEASE ONLY USE THIS IF YOU ARE FAMILIAR WITH PYTHON AND YOU HAVE LOOKED THROUGH MY CODE FIRST TO CHECK IF YOU'RE HAPPY WITH IT.**
+**WARNING, THIS IS MY FIRST PYTHON PROJECT SO IT COULD HAVE SERIOUS ISSUES WHICH COULD POTENTIALLY COST YOU MONEY. PLEASE ONLY USE THIS IF YOU ARE FAMILIAR WITH PYTHON AND BRENDA AND YOU ARE HAPPY WITH MY CODE.**
