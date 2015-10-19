@@ -6,5 +6,5 @@ Simple console for operating James Yonan's [Brenda](https://github.com/jamesyona
  
 #HOW TO INSTALL#
 
-Follow use [win_brenda_installer](https://github.com/rider-rebooted/win_brenda_installer) or follow Todd Mcintosh's [directions](http://brendapro.com/forum/viewtopic.php?f=0&t=76&sid=e6bc8c5335e35bab0605da5a5a6f9965) to get Brenda working on Windows, then download this Python file and double click it (or open with python).
+Use [win_brenda_installer](https://github.com/rider-rebooted/win_brenda_installer) or follow Todd Mcintosh's [directions](http://brendapro.com/forum/viewtopic.php?f=0&t=76&sid=e6bc8c5335e35bab0605da5a5a6f9965) to get Brenda working on Windows, then download this Python file and double click it (or open with python).
 
