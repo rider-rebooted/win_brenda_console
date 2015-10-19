@@ -39,8 +39,9 @@ rs = 'reset'
 t = '-T '
 sp = 'stop'
 ca = 'cancel'
+bm = 'c:/brenda-master'
 
-
+status = os.chdir(bm)
 
 def mainmenuoptions ():
     print
@@ -101,7 +102,7 @@ def workq ():
         if qconf=='c':
             clear()
             break
-        if fconf=='n':
+        if qconf=='n':
             clear()
                 
 def workqinit ():    
@@ -265,8 +266,3 @@ def cancelmenu ():
             spacetime()
                 
 mainmenu()
-
-
-
-    
-    
