@@ -8,4 +8,4 @@ Simple console for operating James Yonan's [Brenda](https://github.com/jamesyona
 
 Use [win_brenda_installer](https://github.com/rider-rebooted/win_brenda_installer) or follow Todd Mcintosh's [directions](http://brendapro.com/forum/viewtopic.php?f=0&t=76&sid=e6bc8c5335e35bab0605da5a5a6f9965) to get Brenda working on Windows, then download this zip file, extract it and double click the "win_brenda_console.py" file to run.
 
-Tested on Windows 8.1 and Windowws 10
+Tested on Windows 8.1 and Windows 10
