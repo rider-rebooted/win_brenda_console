@@ -8,7 +8,7 @@ I wrote this for myself but thought others might find it useful. It's my first P
  
 #HOW TO INSTALL#
 
-Use [win_brenda_installer](https://github.com/rider-rebooted/win_brenda_installer) (an automatic Windows Brenda installation script I wrote or follow Todd Mcintosh's [directions](http://brendapro.com/forum/viewtopic.php?f=0&t=76&sid=e6bc8c5335e35bab0605da5a5a6f9965) to get Brenda working on Windows, then download this zip file, extract it and double click the "win_brenda_console.py" file to run.
+Use [win_brenda_installer](https://github.com/rider-rebooted/win_brenda_installer) (an automatic Windows Brenda installation script I wrote) or follow Todd Mcintosh's [directions](http://brendapro.com/forum/viewtopic.php?f=0&t=76&sid=e6bc8c5335e35bab0605da5a5a6f9965) to get Brenda working on Windows, then download this zip file, extract it and double click the "win_brenda_console.py" file to run.
 
 
 Tested on Windows 8.1 and Windows 10
