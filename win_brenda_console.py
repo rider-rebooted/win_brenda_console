@@ -1,5 +1,6 @@
 import time
 import os
+from decimal import *
 
 def spacetime ():
     time.sleep(2)
@@ -23,6 +24,7 @@ i = '-i '
 n = '-N '
 p = '-p '
 spot = 'spot'
+spotprice = 'price'
 
 py = 'python '
 bw = 'brenda-work '
@@ -34,6 +36,9 @@ st = 'status'
 pf = 'perf'
 tc = 'cat task-count'
 tl = 'tail log'
+pru = 'prune '
+smlt = '-t '
+dflag = '-d '
 
 rs = 'reset'
 t = '-T '
@@ -49,7 +54,7 @@ def mainmenuoptions ():
     print
     print
     print "s = Setting up your farm"
-    print "m = Monitoring your farm"
+    print "m = Managing your farm"
     print "c = Canceling and resetting your farm"
     print
 
@@ -72,8 +77,9 @@ def setupmenuoptions ():
     print "m = Go to main menu"
     print
     print
-    print "b = build work queue"
-    print "i = initiate instances"
+    print "b = Build work queue"
+    print "p = Price of instance"
+    print "i = Initiate instances"
     print
     print
     
@@ -112,7 +118,28 @@ def workqinit ():
         return
     queue = py+bw+t+ft+s+sframe+sb+e+eframe+sb+pu
     status = os.system(queue)
-    spacetime()
+    print
+    exit = raw_input('Enter any key to exit ')
+
+def prices():
+    spinstype = 'c1.xlarge'
+    spotrequest = py+br+i+spinstype+sb+spotprice
+    status = os.system(spotrequest)
+    print
+    spinstype = 'c3.large'
+    spotrequest = py+br+i+spinstype+sb+spotprice
+    status = os.system(spotrequest)
+    print
+    spinstype = 'c3.xlarge'
+    spotrequest = py+br+i+spinstype+sb+spotprice
+    status = os.system(spotrequest)
+    print
+    spinstype = 'c3.2xlarge'
+    spotrequest = py+br+i+spinstype+sb+spotprice
+    status = os.system(spotrequest)
+    print
+    exit = raw_input('Enter any key to exit ')
+
 
 def instance():
     global amount
@@ -120,8 +147,10 @@ def instance():
     global iconf
     while True:
         print
-        print "a = c3.large"
-        print "b = c3.2xlarge"
+        print "a = c1.xlarge"
+        print "b = c3.large"
+        print "c = c3.xlarge"
+        print "d = c3.2xlarge"
         print
         inst = raw_input('Which instance would you like to use? ')
         clear()
@@ -134,13 +163,24 @@ def instance():
         global type
         while True:
             if inst == 'a':
-                type = 'c3.large'
+                type = 'c1.xlarge'
                 break
             if inst == 'b':
+                type = 'c3.large'
+                break
+            if inst == 'c':
+                type = 'c3.xlarge'
+                break
+            if inst == 'd':
                 type = 'c3.2xlarge'
                 break
         print
-        print "You are bidding for "+amount,"X"+sb+type,"at a cost of $"+price," per instance."
+        print "You are bidding for "+amount,"X"+sb+type,"at a cost of $ "+price,"per instance."
+        print
+        amountD = Decimal(amount)
+        priceD = Decimal(price)
+        math = (amountD*priceD)
+        print 'This will cost you $',math, 'per hour'
         print
         iconf = raw_input('Are these values correct, y or n? (c to cancel) ')  
         if iconf=='y':
@@ -159,11 +199,9 @@ def instanceinit ():
         return   
     instrequest = py+br+i+type+sb+n+amount+sb+p+price+sb+spot
     status = os.system(instrequest)
-    spacetime()
+    print
+    exit = raw_input('Enter any key to exit ')
         
-        
-
-
 def setupmenu ():
     while True:
         clear()
@@ -176,14 +214,15 @@ def setupmenu ():
             clear()
             workq()
             workqinit()
+
+        if setuptask=='p':  
+            clear()
+            prices()
+
         if setuptask=='i':  
             clear()
             instance()
             instanceinit()
-
-
-
-
 
 def monmenuoptions ():
     print 
@@ -192,10 +231,11 @@ def monmenuoptions ():
     print
     print "w = Work queue status"
     print "r = Run status"
-    print "u = Instance uptime"
-    print "t = Instance tail log"
-    print "p = Render farm performance"
-    print "f = Instance task (frame) count"
+    print "u = Uptime of instances"
+    print "t = Tail log from instances"
+    print "f = Farm performance"
+    print "c = Instance task (frame) count"
+    print "p = Prune instances"
     print
     print
 
@@ -210,33 +250,94 @@ def monmenu ():
         if montask=='w':  
             clear()   
             status = os.system(py+bw+st)      
-            spacetime()
+            print
+            exit = raw_input('Enter any key to exit ')
         if montask=='r':  
             clear()
             os.system(py+br+st)     
-            spacetime()
+            print
+            exit = raw_input('Enter any key to exit ')
         if montask=='u':           
             clear()
             os.system(py+bt+sh+ut)      
-            spacetime()
+            print
+            exit = raw_input('Enter any key to exit ')
         if montask=='t':           
             clear()
             os.system(py+bt+sh+tl)      
-            spacetime()
-        if montask=='p':           
-            clear()
-            os.system(py+bt+pf)      
-            spacetime()
+            print
+            exit = raw_input('Enter any key to exit ')
         if montask=='f':           
             clear()
+            os.system(py+bt+pf)      
+            print
+            exit = raw_input('Enter any key to exit ')
+        if montask=='c':           
+            clear()
             os.system(py+bt+sh+tc)      
-            spacetime()
-
+            print
+            exit = raw_input('Enter any key to exit ')
+        if montask=='p':           
+            clear()
+            while True:
+                print
+                print 'Would you like to do a dry run?'
+                print
+                print 'y = Yes'
+                print 'n = No'
+                print
+                dry = raw_input('Enter your choice ')
+                if dry==('y'):
+                    dry = 'y'
+                    break
+                if dry==('n'):
+                    dry = 'n'
+                    break
+            clear()
+            while True:
+                print
+                print 'Would you like to only prune instances close to transitioning'
+                print 'to their next billable hour?'
+                print
+                print 'y = Yes'
+                print 'n = No'
+                print
+                trans = raw_input('Enter your choice ')
+                if trans=='y':
+                    clear()
+                    print
+                    uptime = raw_input('What should the minimum uptime (in minutes) of pruned instances be? ')
+                    clear()
+                    print
+                    inprunet = raw_input('How many instances would you like to reduce the farm to? ')
+                    clear()
+                    if dry =='y':
+                        close = py+bt+t+dflag+smlt+uptime+sb+pru+inprunet
+                    if dry =='n':
+                        close = py+bt+t+smlt+uptime+sb+pru+inprunet
+                    os.system(close)
+                    print
+                    exit = raw_input('Enter any key to exit ')
+                    clear()
+                    break                
+                if trans=='n':
+                    clear()
+                    print
+                    inprune = raw_input('How many instances would you reduce the farm to? ')
+                    clear()
+                    if dry =='y':
+                        close2 = py+bt+t+dflag+pru+inprune
+                    if dry =='n':
+                        close2 = py+bt+t+pru+inprune
+                    os.system(close2)
+                    print
+                    exit = raw_input('Enter any key to exit ')
+                    clear()
+                    break
 
 def cancelmenuoptions ():
     print 
     print "m = Go to main menu"
-    print
     print
     print "r = Reset work queue"
     print "s = Stop all running instances"
@@ -255,14 +356,17 @@ def cancelmenu ():
             clear()   
             status = os.system(py+bw+rs)
             print "Work queue has been reset"      
-            spacetime()
+            print
+            exit = raw_input('Enter any key to exit ')
         if canceltask=='s':  
             clear()   
             status = os.system(py+br+t+sp)
-            spacetime()
+            print
+            exit = raw_input('Enter any key to exit ')
         if canceltask=='c':  
             clear()   
             status = os.system(py+br+ca)
-            spacetime()
+            print
+            exit = raw_input('Enter any key to exit ')
                 
 mainmenu()
