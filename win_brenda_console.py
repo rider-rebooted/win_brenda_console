@@ -1,6 +1,9 @@
 import time
 import os
 from decimal import *
+import shutil
+from Tkinter import *
+from tkFileDialog import *
 
 def spacetime ():
     time.sleep(2)
@@ -45,6 +48,11 @@ t = '-T '
 sp = 'stop'
 ca = 'cancel'
 bm = 'c:/brenda-master'
+ps = 'c:/Python27/Scripts'
+ap = '/AppData/Roaming/'
+ini = 's3cmd.ini'
+sl = '/'
+scf = '.s3cfg'
 
 status = os.chdir(bm)
 
@@ -55,7 +63,9 @@ def mainmenuoptions ():
     print
     print "s = Setting up your farm"
     print "m = Managing your farm"
+    print "d = Download rendered frames"
     print "c = Canceling and resetting your farm"
+    print
     print
 
 def mainmenu ():
@@ -66,11 +76,13 @@ def mainmenu ():
         if submen =='s':           
             setupmenu()    
         if submen =='m':           
-            monmenu()     
+            monmenu()
+        if submen =='d':
+            downmenu()   
         if submen =='c':           
             cancelmenu()
-             
 
+             
 
 def setupmenuoptions ():
     print 
@@ -83,8 +95,6 @@ def setupmenuoptions ():
     print
     print
     
-
-
 
 
 def workq ():
@@ -335,13 +345,90 @@ def monmenu ():
                     clear()
                     break
 
+def downmenuoptions ():
+    print 
+    print "m = Go to main menu"
+    print
+    print
+    print "o = One time download to local folder"
+    print "r = Regular download to local folder (to avoid a large final download)"
+    print
+    print
+
+def downmenu ():
+    from os.path import expanduser
+    home = expanduser("~")
+    there = os.path.isfile(home+ap+ini)
+    if there == False:
+        clear()
+        print
+        print """Recreating the original "s3cmd.ini" file..."""
+        print
+        print "(required for downloading files from a bucket)"
+        spacetime()
+        shutil.copyfile(home+sl+scf, home+ap+scf)
+        status = os.rename(home+ap+scf, home+ap+ini)
+    while True:
+        clear()
+        downmenuoptions()
+        downtask = raw_input('which task would you like to perform? ')
+        if downtask =='m':
+            clear()
+            break
+        if downtask =='o': 
+            clear()
+            root = Tk()
+            root.attributes('-fullscreen', True)
+            dir = askdirectory(parent=root, title='Select a folder to download frames to')
+            root.destroy()
+            bucket = raw_input('Enter name of frame bucket? ')
+            clear()          
+            status = os.chdir(ps)
+            status = os.system('python s3cmd get -r --skip-existing s3://'+bucket+sb+dir)
+            exit = raw_input('Enter any key to exit ')
+            status = os.chdir(bm)
+        if downtask =='r': 
+            clear()
+            print
+            tinterval = raw_input('Time interval between downloads (minutes)? ')
+            t = int(tinterval)*60
+            clear()
+            root = Tk()
+            root.attributes('-fullscreen', True)
+            dir = askdirectory(parent=root, title='Select a folder to download frames to')
+            root.destroy()
+            clear()
+            bucket = raw_input('Enter name of frame bucket? ')
+            clear()    
+            try:
+                while True:
+                    print
+                    print "Checking for new frames every "+tinterval,"minutes"
+                    print
+                    print """Press "control-c" to stop regular download"""
+                    status = os.chdir(ps)
+                    status = os.system('python s3cmd get -r --skip-existing s3://'+bucket+sb+dir)
+                    status = os.chdir(bm)
+                    clear()
+                    print
+                    print "Checking for new frames every "+tinterval,"minutes"
+                    print
+                    print """Press "control-c" to stop regular download"""
+                    time.sleep(t)
+                    clear()
+
+            except KeyboardInterrupt:
+                clear()
+
 def cancelmenuoptions ():
     print 
     print "m = Go to main menu"
     print
+    print
     print "r = Reset work queue"
     print "s = Stop all running instances"
     print "c = Cancel pending spot requests"
+    print
     print
 
 def cancelmenu ():
@@ -368,5 +455,5 @@ def cancelmenu ():
             status = os.system(py+br+ca)
             print
             exit = raw_input('Enter any key to exit ')
-                
+
 mainmenu()
