@@ -13,4 +13,4 @@ Use [win_brenda_installer](https://github.com/rider-rebooted/win_brenda_installe
 
 Tested on Windows 8.1 and Windows 10
 
-*UPDATE - option to download frames*
+**UPDATE - option to download frames**
