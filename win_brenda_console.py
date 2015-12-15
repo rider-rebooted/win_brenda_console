@@ -4,6 +4,7 @@ from decimal import *
 import shutil
 from Tkinter import *
 from tkFileDialog import *
+import ConfigParser
 
 def spacetime ():
     time.sleep(2)
@@ -355,6 +356,20 @@ def downmenuoptions ():
     print
     print
 
+class FakeSecHead(object):
+    def __init__(self, fp):
+        self.fp = fp
+        self.sechead = '[asection]\n'
+
+    def readline(self):
+        if self.sechead:
+            try: 
+                return self.sechead
+            finally: 
+                self.sechead = None
+        else: 
+            return self.fp.readline()
+
 def downmenu ():
     from os.path import expanduser
     home = expanduser("~")
@@ -380,11 +395,15 @@ def downmenu ():
             root = Tk()
             root.attributes('-fullscreen', True)
             dir = askdirectory(parent=root, title='Select a folder to download frames to')
-            root.destroy()
-            bucket = raw_input('Enter name of frame bucket? ')
-            clear()          
+            root.destroy()          
+            from os.path import expanduser
+            home = expanduser("~")
+            status = os.chdir(home)
+            cp = ConfigParser.SafeConfigParser()
+            cp.readfp(FakeSecHead(open('.brenda.conf')))
+            RENDER_OUTPUT = cp.get('asection', 'RENDER_OUTPUT')      
             status = os.chdir(ps)
-            status = os.system('python s3cmd get -r --skip-existing s3://'+bucket+sb+dir)
+            status = os.system('python s3cmd get -r --skip-existing '+RENDER_OUTPUT+sb+dir)
             exit = raw_input('Enter any key to exit ')
             status = os.chdir(bm)
         if downtask =='r': 
@@ -398,8 +417,12 @@ def downmenu ():
             dir = askdirectory(parent=root, title='Select a folder to download frames to')
             root.destroy()
             clear()
-            bucket = raw_input('Enter name of frame bucket? ')
-            clear()    
+            from os.path import expanduser
+            home = expanduser("~")
+            status = os.chdir(home)
+            cp = ConfigParser.SafeConfigParser()
+            cp.readfp(FakeSecHead(open('.brenda.conf')))
+            RENDER_OUTPUT = cp.get('asection', 'RENDER_OUTPUT')
             try:
                 while True:
                     print
@@ -407,7 +430,7 @@ def downmenu ():
                     print
                     print """Press "control-c" to stop regular download"""
                     status = os.chdir(ps)
-                    status = os.system('python s3cmd get -r --skip-existing s3://'+bucket+sb+dir)
+                    status = os.system('python s3cmd get -r --skip-existing '+RENDER_OUTPUT+sb+dir)
                     status = os.chdir(bm)
                     clear()
                     print
