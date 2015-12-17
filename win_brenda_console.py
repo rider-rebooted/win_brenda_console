@@ -5,6 +5,8 @@ import shutil
 from Tkinter import *
 from tkFileDialog import *
 import ConfigParser
+import urlparse
+import zipfile
 
 def spacetime ():
     time.sleep(2)
@@ -57,6 +59,7 @@ scf = '.s3cfg'
 
 status = os.chdir(bm)
 
+
 def mainmenuoptions ():
     print
     print
@@ -90,6 +93,7 @@ def setupmenuoptions ():
     print "m = Go to main menu"
     print
     print
+    print "n = New project"
     print "b = Build work queue"
     print "p = Price of instance"
     print "i = Initiate instances"
@@ -97,6 +101,124 @@ def setupmenuoptions ():
     print
     
 
+
+def nproj ():
+    while True:
+        print
+        print "Select your Blender project file (should not be zipped and must be packed)"
+        time.sleep(1)
+        root = Tk()
+        root.withdraw()
+        projfile = askopenfilename(parent=root, title='select your zipped and packed Blender project file')
+        root.destroy()
+        clear()
+        projfilename = os.path.basename(os.path.abspath(projfile))
+        projfilepath = os.path.dirname(os.path.abspath(projfile))
+        print
+        print "***WARNING***"
+        print
+        print
+        print "This will..." 
+        print
+        print "1.delete all files in your frame and project buckets"
+        print
+        print "2.zip and upload "+projfilename
+        print
+        print "3.update the brenda.conf file"
+        print
+        print
+        nprojconf = raw_input('Do you want to continue, type y or n? ') 
+        if nprojconf=='y':
+            clear()
+
+            #gets path of project file in s3 bucket
+            from os.path import expanduser
+            home = expanduser("~")
+            status = os.chdir(home)
+            cp = ConfigParser.SafeConfigParser()
+            cp.readfp(FakeSecHead(open('.brenda.conf')))
+            BLENDER_PROJECT = cp.get('asection', 'BLENDER_PROJECT')
+            projbucketname = urlparse.urlsplit(BLENDER_PROJECT).netloc
+            projbucketpath = 's3://'+projbucketname
+
+
+            #gets sqs work queue name
+            from os.path import expanduser
+            home = expanduser("~")
+            status = os.chdir(home)
+            cp = ConfigParser.SafeConfigParser()
+            cp.readfp(FakeSecHead(open('.brenda.conf')))
+            workqpath = cp.get('asection', 'WORK_QUEUE')
+
+            #gets frame bucket path
+            from os.path import expanduser
+            home = expanduser("~")
+            status = os.chdir(home)
+            cp = ConfigParser.SafeConfigParser()
+            cp.readfp(FakeSecHead(open('.brenda.conf')))
+            framebucketpath = cp.get('asection', 'RENDER_OUTPUT')
+
+
+            #changes to s3cmd working directory
+            status = os.chdir(ps)
+
+
+            #deletes all old project files
+            print
+            status = os.system('python s3cmd del -r -f '+projbucketpath)
+            clear()
+
+            #deletes all old frames
+            print
+            status = os.system('python s3cmd del -r -f '+framebucketpath)
+            clear()
+            print
+            print "Deleted"
+            spacetime()
+
+            #zips and moves selected file to s3 bucket
+            print
+            print "Zipping and uploading project file..."
+            print
+            status = os.chdir(projfilepath)
+            zipper = '.zip'
+            projfilenamestripped = os.path.splitext(projfilename)[0]
+            zippedprojfilename = projfilenamestripped+zipper
+            output = zipfile.ZipFile(zippedprojfilename, 'w')
+            output.write(projfilename)
+            output.close()
+            status = os.chdir(ps)
+            status = os.system('python s3cmd put --no-mime-magic --multipart-chunk-size-mb=5 '+projfilepath+sl+zippedprojfilename+sb+projbucketpath)
+            spacetime()
+
+            #changes reference in config file
+            home = expanduser("~")
+            status = os.chdir(home)
+            file = open(".brenda.conf", "w")
+            print
+            print "Updating Brenda configuration file..."
+            u = """INSTANCE_TYPE=c3.large
+BLENDER_PROJECT=s3://"""
+            v = '/'
+            w = """
+WORK_QUEUE="""
+            x = """
+RENDER_OUTPUT="""
+            y = """
+DONE=shutdown
+\n"""
+            file.write(u+projbucketname+v+zippedprojfilename+w+workqpath+x+framebucketpath+y)
+            file.close()
+            status = os.chdir(bm)
+            spacetime ()
+            print
+            print "Done"
+            spacetime()
+            status = os.chdir(bm)
+            break
+        if nprojconf=='n':
+            clear()
+            break
 
 def workq ():
     global sframe
@@ -112,7 +234,7 @@ def workq ():
         print
         print "Your animation starts at frame "+sframe,"and ends at frame "+eframe
         print
-        qconf = raw_input('Are these values correct, y or n? (c to cancel) ')  
+        qconf = raw_input('Are these values correct, y or n? (c to cancel and return) ')  
         if qconf=='y':
             clear()
             break
@@ -130,7 +252,7 @@ def workqinit ():
     queue = py+bw+t+ft+s+sframe+sb+e+eframe+sb+pu
     status = os.system(queue)
     print
-    exit = raw_input('Enter any key to exit ')
+    exit = raw_input('Enter any key to return ')
 
 def prices():
     spinstype = 'c1.xlarge'
@@ -149,7 +271,7 @@ def prices():
     spotrequest = py+br+i+spinstype+sb+spotprice
     status = os.system(spotrequest)
     print
-    exit = raw_input('Enter any key to exit ')
+    exit = raw_input('Enter any key to return ')
 
 
 def instance():
@@ -193,7 +315,7 @@ def instance():
         math = (amountD*priceD)
         print 'This will cost you $',math, 'per hour'
         print
-        iconf = raw_input('Are these values correct, y or n? (c to cancel) ')  
+        iconf = raw_input('Are these values correct, y or n? (c to cancel and return) ')  
         if iconf=='y':
             clear()
             break
@@ -211,7 +333,7 @@ def instanceinit ():
     instrequest = py+br+i+type+sb+n+amount+sb+p+price+sb+spot
     status = os.system(instrequest)
     print
-    exit = raw_input('Enter any key to exit ')
+    exit = raw_input('Enter any key to return ')
         
 def setupmenu ():
     while True:
@@ -221,6 +343,9 @@ def setupmenu ():
         if setuptask=='m':
             clear()
             break
+        if setuptask=='n':  
+            clear()
+            nproj()
         if setuptask=='b':  
             clear()
             workq()
@@ -262,32 +387,32 @@ def monmenu ():
             clear()   
             status = os.system(py+bw+st)      
             print
-            exit = raw_input('Enter any key to exit ')
+            exit = raw_input('Enter any key to return ')
         if montask=='r':  
             clear()
             os.system(py+br+st)     
             print
-            exit = raw_input('Enter any key to exit ')
+            exit = raw_input('Enter any key to return ')
         if montask=='u':           
             clear()
             os.system(py+bt+sh+ut)      
             print
-            exit = raw_input('Enter any key to exit ')
+            exit = raw_input('Enter any key to return ')
         if montask=='t':           
             clear()
             os.system(py+bt+sh+tl)      
             print
-            exit = raw_input('Enter any key to exit ')
+            exit = raw_input('Enter any key to return ')
         if montask=='f':           
             clear()
             os.system(py+bt+pf)      
             print
-            exit = raw_input('Enter any key to exit ')
+            exit = raw_input('Enter any key to return ')
         if montask=='c':           
             clear()
             os.system(py+bt+sh+tc)      
             print
-            exit = raw_input('Enter any key to exit ')
+            exit = raw_input('Enter any key to return ')
         if montask=='p':           
             clear()
             while True:
@@ -328,13 +453,13 @@ def monmenu ():
                         close = py+bt+t+smlt+uptime+sb+pru+inprunet
                     os.system(close)
                     print
-                    exit = raw_input('Enter any key to exit ')
+                    exit = raw_input('Enter any key to return ')
                     clear()
                     break                
                 if trans=='n':
                     clear()
                     print
-                    inprune = raw_input('How many instances would you reduce the farm to? ')
+                    inprune = raw_input('How many instances would you like to reduce the farm to? ')
                     clear()
                     if dry =='y':
                         close2 = py+bt+t+dflag+pru+inprune
@@ -342,7 +467,7 @@ def monmenu ():
                         close2 = py+bt+t+pru+inprune
                     os.system(close2)
                     print
-                    exit = raw_input('Enter any key to exit ')
+                    exit = raw_input('Enter any key to return ')
                     clear()
                     break
 
@@ -393,9 +518,16 @@ def downmenu ():
         if downtask =='o': 
             clear()
             root = Tk()
-            root.attributes('-fullscreen', True)
+            root.withdraw()
+            print
+            print "Select a folder to download frames to"
+            time.sleep(1)
             dir = askdirectory(parent=root, title='Select a folder to download frames to')
-            root.destroy()          
+            root.destroy()
+            clear()
+            print
+            print "Downloading frames..."
+            print  
             from os.path import expanduser
             home = expanduser("~")
             status = os.chdir(home)
@@ -404,16 +536,21 @@ def downmenu ():
             RENDER_OUTPUT = cp.get('asection', 'RENDER_OUTPUT')      
             status = os.chdir(ps)
             status = os.system('python s3cmd get -r --skip-existing '+RENDER_OUTPUT+sb+dir)
-            exit = raw_input('Enter any key to exit ')
+            clear()
+            print
+            exit = raw_input('Enter any key to return ')
             status = os.chdir(bm)
         if downtask =='r': 
             clear()
             print
-            tinterval = raw_input('Time interval between downloads (minutes)? ')
+            tinterval = raw_input('Time interval between checking for new frames and downloading (minutes)? ')
             t = int(tinterval)*60
             clear()
             root = Tk()
-            root.attributes('-fullscreen', True)
+            root.withdraw()
+            print
+            print "Select a folder to download frames to"
+            time.sleep(1)
             dir = askdirectory(parent=root, title='Select a folder to download frames to')
             root.destroy()
             clear()
@@ -428,7 +565,8 @@ def downmenu ():
                     print
                     print "Checking for new frames every "+tinterval,"minutes"
                     print
-                    print """Press "control-c" to stop regular download"""
+                    print """Press "control-c" to stop regular download and return"""
+                    print
                     status = os.chdir(ps)
                     status = os.system('python s3cmd get -r --skip-existing '+RENDER_OUTPUT+sb+dir)
                     status = os.chdir(bm)
@@ -436,7 +574,8 @@ def downmenu ():
                     print
                     print "Checking for new frames every "+tinterval,"minutes"
                     print
-                    print """Press "control-c" to stop regular download"""
+                    print """Press "control-c" to stop regular download and return"""
+                    print
                     time.sleep(t)
                     clear()
 
@@ -467,16 +606,16 @@ def cancelmenu ():
             status = os.system(py+bw+rs)
             print "Work queue has been reset"      
             print
-            exit = raw_input('Enter any key to exit ')
+            exit = raw_input('Enter any key to return ')
         if canceltask=='s':  
             clear()   
             status = os.system(py+br+t+sp)
             print
-            exit = raw_input('Enter any key to exit ')
+            exit = raw_input('Enter any key to return ')
         if canceltask=='c':  
             clear()   
             status = os.system(py+br+ca)
             print
-            exit = raw_input('Enter any key to exit ')
+            exit = raw_input('Enter any key to return ')
 
 mainmenu()
