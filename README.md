@@ -13,4 +13,8 @@ Use [win_brenda_installer](https://github.com/rider-rebooted/win_brenda_installe
 
 Tested on Windows 8.1 and Windows 10
 
-**UPDATE - option to download frames**
+12/12/2015 **UPDATE - option to download frames**
+You can download frames automatically by selecting a download folder. You can also set it to download frames every n minutes so save a large final download.
+
+17/12/2015 **UPDATE - option to create a new project**
+You can create a new project automatically by simply selecting a .blend file. Win_brenda_console will delete all the files from your project and frame buckets, zip up the file, upload it and then make changes to the brenda.conf file so you can start rendering immediatly.
