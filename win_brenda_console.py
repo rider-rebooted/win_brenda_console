@@ -21,6 +21,7 @@ def menerror():
 
 clear = lambda: os.system('cls')
 
+
 ft = 'frame-template '
 s = '-s '
 e = '-e '
@@ -496,18 +497,6 @@ class FakeSecHead(object):
             return self.fp.readline()
 
 def downmenu ():
-    from os.path import expanduser
-    home = expanduser("~")
-    there = os.path.isfile(home+ap+ini)
-    if there == False:
-        clear()
-        print
-        print """Recreating the original "s3cmd.ini" file..."""
-        print
-        print "(required for downloading files from a bucket)"
-        spacetime()
-        shutil.copyfile(home+sl+scf, home+ap+scf)
-        status = os.rename(home+ap+scf, home+ap+ini)
     while True:
         clear()
         downmenuoptions()
@@ -617,5 +606,19 @@ def cancelmenu ():
             status = os.system(py+br+ca)
             print
             exit = raw_input('Enter any key to return ')
+def inidup ():
+    from os.path import expanduser
+    home = expanduser("~")
+    there = os.path.isfile(home+ap+ini)
+    if there == False:
+        clear()
+        print
+        print """Recreating the original "s3cmd.ini" file..."""
+        print
+        print "(required for working with buckets)"
+        spacetime()
+        shutil.copyfile(home+sl+scf, home+ap+scf)
+        status = os.rename(home+ap+scf, home+ap+ini)
 
+inidup()
 mainmenu()
