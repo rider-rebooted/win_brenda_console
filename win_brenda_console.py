@@ -57,8 +57,12 @@ ap = '/AppData/Roaming/'
 ini = 's3cmd.ini'
 sl = '/'
 scf = '.s3cfg'
+brenda = 'brenda'
+q = '"'
 
 status = os.chdir(bm)
+
+
 
 
 def mainmenuoptions ():
@@ -94,13 +98,44 @@ def setupmenuoptions ():
     print "m = Go to main menu"
     print
     print
+    print "u = Update AMI"
     print "n = New project"
     print "b = Build work queue"
     print "p = Price of instance"
     print "i = Initiate instances"
     print
     print
-    
+
+def ami ():
+    while True:
+        clear()
+        print
+        ami = raw_input('Enter the new public AMI you wish to use (e.g. "ami-0529086c") ')
+        clear()
+        print
+        print 'Your new AMI will be changed to '+q+ami+q
+        print
+        print
+        amiconf = raw_input('Do you want to continue, type y or n? ') 
+        if amiconf=='y':
+            clear()
+            print
+            print "Updating AMI..."
+            status = os.chdir(bm+sl+brenda)
+            file = open("ami.py", "w")
+            w = """# An AMI that contains Blender and Brenda (may be None)
+AMI_ID="""
+            file.write(w+q+ami+q)
+            file.close()
+            spacetime ()
+            print
+            print "Done"
+            spacetime()
+            status = os.chdir(bm)
+            break
+        if amiconf=='n':
+            clear()
+            break
 
 
 def nproj ():
@@ -121,11 +156,12 @@ def nproj ():
         print
         print "This will..." 
         print
-        print "1.delete all files in your frame and project buckets"
         print
-        print "2.zip and upload "+projfilename
+        print "1. delete all files in your frame and project buckets"
         print
-        print "3.update the brenda.conf file"
+        print "2. zip and upload "+projfilename
+        print
+        print "3. update the brenda.conf file"
         print
         print
         nprojconf = raw_input('Do you want to continue, type y or n? ') 
@@ -181,16 +217,20 @@ def nproj ():
             print
             print "Zipping and uploading project file..."
             print
-            status = os.chdir(projfilepath)
+            os.chdir(projfilepath)
             zipper = '.zip'
             projfilenamestripped = os.path.splitext(projfilename)[0]
             zippedprojfilename = projfilenamestripped+zipper
             output = zipfile.ZipFile(zippedprojfilename, 'w')
             output.write(projfilename)
             output.close()
-            status = os.chdir(ps)
-            status = os.system('python s3cmd put --no-mime-magic --multipart-chunk-size-mb=5 '+projfilepath+sl+zippedprojfilename+sb+projbucketpath)
+            os.chdir(ps)
+            os.system('python s3cmd put --no-mime-magic --multipart-chunk-size-mb=5 '+projfilepath+sl+zippedprojfilename+sb+projbucketpath)
             spacetime()
+
+            #deletes zipped file from users pc
+            os.chdir(projfilepath)
+            os.remove(zippedprojfilename)
 
             #changes reference in config file
             home = expanduser("~")
@@ -243,6 +283,8 @@ def workq ():
             clear()
             break
         if qconf=='n':
+            clear()
+        else:
             clear()
                 
 def workqinit ():    
@@ -344,6 +386,9 @@ def setupmenu ():
         if setuptask=='m':
             clear()
             break
+        if setuptask=='u':  
+            clear()
+            ami()
         if setuptask=='n':  
             clear()
             nproj()
@@ -385,33 +430,45 @@ def monmenu ():
             clear()
             break
         if montask=='w':  
-            clear()   
+            clear()
+            print
             status = os.system(py+bw+st)      
+            print
             print
             exit = raw_input('Enter any key to return ')
         if montask=='r':  
             clear()
+            print
             os.system(py+br+st)     
+            print
             print
             exit = raw_input('Enter any key to return ')
         if montask=='u':           
             clear()
+            print
             os.system(py+bt+sh+ut)      
+            print
             print
             exit = raw_input('Enter any key to return ')
         if montask=='t':           
             clear()
+            print
             os.system(py+bt+sh+tl)      
+            print
             print
             exit = raw_input('Enter any key to return ')
         if montask=='f':           
             clear()
-            os.system(py+bt+pf)      
+            print
+            os.system(py+bt+pf)    
+            print  
             print
             exit = raw_input('Enter any key to return ')
         if montask=='c':           
             clear()
+            print
             os.system(py+bt+sh+tc)      
+            print
             print
             exit = raw_input('Enter any key to return ')
         if montask=='p':           
@@ -527,6 +584,9 @@ def downmenu ():
             status = os.system('python s3cmd get -r --skip-existing '+RENDER_OUTPUT+sb+dir)
             clear()
             print
+            print "Frames have been downloaded"
+            print
+            print
             exit = raw_input('Enter any key to return ')
             status = os.chdir(bm)
         if downtask =='r': 
@@ -591,21 +651,53 @@ def cancelmenu ():
             clear()           
             break  
         if canceltask=='r':  
-            clear()   
+            clear()
+            print
             status = os.system(py+bw+rs)
-            print "Work queue has been reset"      
+            if status==0:
+                print
+                print "Work queue has been reset"
+            if status==1:
+                print
+                print
+                print
+                print "There was a problem, please try waiting 60 seconds or use an alternative method" 
+            print
             print
             exit = raw_input('Enter any key to return ')
         if canceltask=='s':  
-            clear()   
+            clear()
+            print
             status = os.system(py+br+t+sp)
+            if status==0:
+                print
+                print
+                print "Instances have been stopped"
+            if status==1:
+                print
+                print
+                print
+                print "There was a problem, please try waiting 60 seconds or use an alternative method" 
+            print
             print
             exit = raw_input('Enter any key to return ')
         if canceltask=='c':  
-            clear()   
+            clear()
+            print
             status = os.system(py+br+ca)
+            if status==0:
+                print
+                print
+                print "Pending spot requests have been cancelled"
+            if status==1:
+                print
+                print
+                print
+                print "There was a problem, please try waiting 60 seconds or use an alternative method" 
+            print
             print
             exit = raw_input('Enter any key to return ')
+
 def inidup ():
     from os.path import expanduser
     home = expanduser("~")
