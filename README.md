@@ -2,14 +2,14 @@
 
 *WARNING, THIS IS MY FIRST PYTHON PROJECT AND IT MAY HAVE SERIOUS ISSUES WHICH COULD COST YOU MONEY.*
 
-12/12/2015 **UPDATE - option to download frames**
-You can now download frames automatically by selecting a download folder. You can also set it to download frames every n minutes so save a large final download.
+28/12/2015 **UPDATE - ability to change AMI**
+You can now change the AMI used by instances so that projects created with newer Blender versions can be rendered.
 
 17/12/2015 **UPDATE - option to create a new project**
 You can now create a new project automatically by selecting a .blend file. Win_brenda_console will delete all the files from your project and frame buckets, zip up the file, upload it and then make changes to the brenda.conf file so you can start rendering immediately.
 
-28/12/2015 **UPDATE - ability to change AMI**
-You can now change the AMI used by instances so that projects created with newer Blender versions can be rendered.
+12/12/2015 **UPDATE - option to download frames**
+You can now download frames automatically by selecting a download folder. You can also set it to download frames every n minutes so save a large final download.
 
 
 Simple console for operating James Yonan's [Brenda](https://github.com/jamesyonan/brenda) for Blender on Windows without command lines. Brenda is an open source piece of software which lets you render Blender projects with very low cost (compared to render farms) AWS Amazon computing instances.
