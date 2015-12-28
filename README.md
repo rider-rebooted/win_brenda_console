@@ -3,6 +3,7 @@
 *WARNING, THIS IS MY FIRST PYTHON PROJECT AND IT MAY HAVE SERIOUS ISSUES WHICH COULD COST YOU MONEY.*
 
 
+
 28/12/2015 **UPDATE - ability to change AMI**
 You can now change the AMI used by instances so that projects created with newer Blender versions can be rendered.
 
