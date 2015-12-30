@@ -5,7 +5,7 @@
 
 
 28/12/2015 **UPDATE - ability to change AMI**
-You can now change the AMI used by instances so that projects created with newer Blender versions can be rendered.
+You can now change the AMI used by instances so that projects created with newer Blender versions can be rendered. Commands sent from cancel menu have their status checked and failure or sucess message is given.
 
 17/12/2015 **UPDATE - option to create a new project**
 You can now create a new project automatically by selecting a .blend file. Win_brenda_console will delete all the files from your project and frame buckets, zip up the file, upload it and then make changes to the brenda.conf file so you can start rendering immediately.
