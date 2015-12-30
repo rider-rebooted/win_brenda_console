@@ -2,7 +2,8 @@
 
 *WARNING, THIS IS MY FIRST PYTHON PROJECT AND IT MAY HAVE SERIOUS ISSUES WHICH COULD COST YOU MONEY.*
 
-
+30/12/2015 **UPDATE - AMI update page gives you list of compatible AMIs**
+When entering a new AMI name you are now presented with a list of compatible options (scraped from a text file on my website)
 
 28/12/2015 **UPDATE - ability to change AMI**
 You can now change the AMI used by instances so that projects created with newer Blender versions can be rendered. Commands sent from cancel menu have their status checked and failure or sucess message is given.
