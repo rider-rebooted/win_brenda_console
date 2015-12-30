@@ -7,6 +7,7 @@ from tkFileDialog import *
 import ConfigParser
 import urlparse
 import zipfile
+import urllib2
 
 def spacetime ():
     time.sleep(2)
@@ -109,8 +110,16 @@ def setupmenuoptions ():
 def ami ():
     while True:
         clear()
+        amidata = urllib2.urlopen('http://www.thegreyroompost.com/win_brenda/win_brenda.txt')
         print
-        ami = raw_input('Enter the new public AMI you wish to use (e.g. "ami-0529086c") ')
+        print 'Recommended AMIs...'
+        print
+        print
+        for line in amidata:
+            print line
+        print
+        print
+        ami = raw_input('Enter the new public AMI you wish to use: ')
         clear()
         print
         print 'Your new AMI will be changed to '+q+ami+q
@@ -698,19 +707,26 @@ def cancelmenu ():
             print
             exit = raw_input('Enter any key to return ')
 
+#This recreates the original "s3cmd.ini" file by making a duplicate of the ".s3cmd" file created by win_brenda_installer, renaming it to "s3cmd.ini" and moving it back
 def inidup ():
     from os.path import expanduser
     home = expanduser("~")
     there = os.path.isfile(home+ap+ini)
     if there == False:
         clear()
-        print
-        print """Recreating the original "s3cmd.ini" file..."""
-        print
-        print "(required for working with buckets)"
-        spacetime()
         shutil.copyfile(home+sl+scf, home+ap+scf)
-        status = os.rename(home+ap+scf, home+ap+ini)
+        os.rename(home+ap+scf, home+ap+ini)
 
+#This changes a line in the "tool.py" file as new Ubuntu AMIs only let you ssh in as "ubuntu" and not "tool" whereas old Ubuntu AMIs let you log in as both
+def toolchange ():
+    x = 'tool.py'
+    with open(bm+sl+brenda+sl+x, 'r') as file:
+        data = file.readlines()
+    data[73] = """                user = utils.get_opt(opts.user, conf, 'AWS_USER', default='ubuntu')\n"""
+    with open(bm+sl+brenda+sl+x, 'w') as file:
+        file.writelines( data )
+
+
+toolchange()
 inidup()
 mainmenu()
