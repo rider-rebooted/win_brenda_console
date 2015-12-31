@@ -2,6 +2,9 @@
 
 *WARNING, THIS IS MY FIRST PYTHON PROJECT AND IT MAY HAVE SERIOUS ISSUES WHICH COULD COST YOU MONEY.*
 
+30/12/2015 **UPDATE - AMIs now selectable**
+List of recommended AMIs is now selectable and if I've uploaded a newer version of win_brenda_console a notification will pop up at the start when the script is run.
+
 30/12/2015 **UPDATE - Gives you a list of compatible AMIs when updating**
 When entering a new AMI name you are now presented with a list of compatible options (scraped from a text file on my website). Also a file is modified at startup which makes win_brenda_console more compatible with newer AMIs.
 
