@@ -6,7 +6,7 @@
 List of recommended AMIs is now selectable. Also, if I've uploaded a newer version of win_brenda_console than the one you're running, a notification will pop up at the start.
 
 30/12/2015 **UPDATE - Gives you a list of compatible AMIs when updating**
-When entering a new AMI name you are now presented with a list of compatible options (scraped from a text file on my website). Also a file is modified at startup which makes win_brenda_console more compatible with newer AMIs.
+When entering a new AMI name you are now presented with an up to date list of compatible options (scraped from a text file on my website). Also a file is modified at startup which makes win_brenda_console more compatible with newer AMIs.
 
 28/12/2015 **UPDATE - ability to change AMI**
 You can now change the AMI used by instances so that projects created with newer Blender versions can be rendered. Commands sent from cancel menu have their status checked and failure or sucess message is given.
