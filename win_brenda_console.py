@@ -5,9 +5,13 @@ import shutil
 from Tkinter import *
 from tkFileDialog import *
 import ConfigParser
+from ConfigParser import SafeConfigParser
 import urlparse
 import zipfile
 import urllib2
+import urllib
+
+thisver = 201512310938
 
 def spacetime ():
     time.sleep(2)
@@ -107,45 +111,106 @@ def setupmenuoptions ():
     print
     print
 
+
 def ami ():
+    clear()
+    urllib.urlretrieve ("http://www.thegreyroompost.com/win_brenda/win_brenda.ini", "win_brenda.ini")
+    parser = SafeConfigParser()
+    parser.read('win_brenda.ini')
+    adesc = parser.get('amis', 'amidesca')
+    a = parser.get('amis', 'amia')
+    bdesc = parser.get('amis', 'amidescb')
+    b = parser.get('amis', 'amib')
+    cdesc = parser.get('amis', 'amidescc')
+    c = parser.get('amis', 'amic')
+    os.remove('win_brenda.ini')
     while True:
-        clear()
-        amidata = urllib2.urlopen('http://www.thegreyroompost.com/win_brenda/win_brenda.txt')
         print
-        print 'Recommended AMIs...'
+        print 'Recommended compatible AMIs...'
         print
         print
-        for line in amidata:
-            print line
+        print "a = "+adesc
+        print
+        print "b = "+bdesc
+        print
+        print "c = "+cdesc
         print
         print
-        ami = raw_input('Enter the new public AMI you wish to use: ')
-        clear()
-        print
-        print 'Your new AMI will be changed to '+q+ami+q
-        print
-        print
-        amiconf = raw_input('Do you want to continue, type y or n? ') 
-        if amiconf=='y':
+        amiconf = raw_input('Choose an AMI or enter "e" to input your own: ')
+        if amiconf =='a':
             clear()
             print
             print "Updating AMI..."
-            status = os.chdir(bm+sl+brenda)
+            os.chdir(bm+sl+brenda)
             file = open("ami.py", "w")
             w = """# An AMI that contains Blender and Brenda (may be None)
 AMI_ID="""
-            file.write(w+q+ami+q)
+            file.write(w+q+a+q)
             file.close()
             spacetime ()
             print
-            print "Done"
+            print "AMI Updated"
             spacetime()
-            status = os.chdir(bm)
             break
-        if amiconf=='n':
+        if amiconf =='b':
             clear()
+            print
+            print "Updating AMI..."
+            os.chdir(bm+sl+brenda)
+            file = open("ami.py", "w")
+            w = """# An AMI that contains Blender and Brenda (may be None)
+AMI_ID="""
+            file.write(w+q+b+q)
+            file.close()
+            spacetime ()
+            print
+            print "AMI Updated"
+            spacetime()
             break
-
+        if amiconf =='c':
+            clear()
+            print
+            print "Updating AMI..."
+            os.chdir(bm+sl+brenda)
+            file = open("ami.py", "w")
+            w = """# An AMI that contains Blender and Brenda (may be None)
+AMI_ID="""
+            file.write(w+q+c+q)
+            file.close()
+            spacetime ()
+            print
+            print "AMI Updated"
+            spacetime()
+            break
+        if amiconf =='e':
+            clear()
+            print
+            ami = raw_input('Enter the new public AMI you wish to use: ')
+            clear()
+            print
+            print 'Your new AMI will be changed to '+q+ami+q
+            print
+            print
+            amiconf = raw_input('Do you want to continue, type y or n? ') 
+            if amiconf=='y':
+                clear()
+                print
+                print "Updating AMI..."
+                status = os.chdir(bm+sl+brenda)
+                file = open("ami.py", "w")
+                w = """# An AMI that contains Blender and Brenda (may be None)
+AMI_ID="""
+                file.write(w+q+ami+q)
+                file.close()
+                spacetime ()
+                print
+                print "AMI Updated"
+                spacetime()
+                status = os.chdir(bm)
+                break
+            if amiconf=='n':
+                clear()
+                break
 
 def nproj ():
     while True:
@@ -727,6 +792,27 @@ def toolchange ():
         file.writelines( data )
 
 
+def vercheck ():
+    clear()
+    urllib.urlretrieve ("http://www.thegreyroompost.com/win_brenda/win_brenda.ini", "win_brenda.ini")
+    parser = SafeConfigParser()
+    parser.read('win_brenda.ini')
+    ghver = parser.get('versions', 'ghver')
+    os.remove('win_brenda.ini')
+    ghver = int(ghver)
+    if ghver > thisver:
+        print
+        print
+        print "UPDATED VERSION AVAILABLE"
+        print 
+        print "Check github"
+        print 
+        spacetime()
+
+
+
+
+vercheck()
 toolchange()
 inidup()
 mainmenu()
