@@ -13,7 +13,7 @@ import urllib
 import sys
 
 
-thisver = 201601031540
+thisver = 201601031610
 
 def spacetime ():
     time.sleep(2)
@@ -485,7 +485,7 @@ def job_summary():
 
     intstartframe = int(START_FRAME)
     intendframe = int(END_FRAME)
-    totalframe = intendframe-intstartframe
+    totalframe = intendframe-intstartframe+1
 
     print "\n\n"
     print " %-25s %-15s" % ('AMI used',ami.AMI_ID)
