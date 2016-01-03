@@ -10,8 +10,10 @@ import urlparse
 import zipfile
 import urllib2
 import urllib
+import sys
 
-thisver = 201512310938
+
+thisver = 201601031540
 
 def spacetime ():
     time.sleep(2)
@@ -28,8 +30,9 @@ clear = lambda: os.system('cls')
 
 
 ft = 'frame-template '
-s = '-s '
-e = '-e '
+sft = 'subframe-template '
+strt = '-s '
+end = '-e '
 pu = 'push'
 sb = ' '
 i = '-i '
@@ -51,6 +54,8 @@ tl = 'tail log'
 pru = 'prune '
 smlt = '-t '
 dflag = '-d '
+xsize = '-X '
+ysize = '-Y '
 
 rs = 'reset'
 t = '-T '
@@ -64,6 +69,10 @@ sl = '/'
 scf = '.s3cfg'
 brenda = 'brenda'
 q = '"'
+
+sys.path.insert(0, bm+sl+brenda)
+import ami
+
 
 status = os.chdir(bm)
 
@@ -105,14 +114,16 @@ def setupmenuoptions ():
     print
     print "u = Update AMI"
     print "n = New project"
+    print "f = Frame settings"
     print "b = Build work queue"
     print "p = Price of instance"
+    print "j = Job summary"
     print "i = Initiate instances"
     print
     print
 
 
-def ami ():
+def amis ():
     clear()
     urllib.urlretrieve ("http://www.thegreyroompost.com/win_brenda/win_brenda.ini", "win_brenda.ini")
     parser = SafeConfigParser()
@@ -124,7 +135,14 @@ def ami ():
     cdesc = parser.get('amis', 'amidescc')
     c = parser.get('amis', 'amic')
     os.remove('win_brenda.ini')
+    reload(ami)
+
     while True:
+        clear()
+        print
+        print 'Current AMI = '+ami.AMI_ID
+        print
+        print
         print
         print 'Recommended compatible AMIs...'
         print
@@ -134,6 +152,7 @@ def ami ():
         print "b = "+bdesc
         print
         print "c = "+cdesc
+        print
         print
         print
         amiconf = raw_input('Choose an AMI or enter "e" to input your own: ')
@@ -185,10 +204,10 @@ AMI_ID="""
         if amiconf =='e':
             clear()
             print
-            ami = raw_input('Enter the new public AMI you wish to use: ')
+            ami_user = raw_input('Enter the new public AMI you wish to use: ')
             clear()
             print
-            print 'Your new AMI will be changed to '+q+ami+q
+            print 'Your new AMI will be changed to '+q+ami_user+q
             print
             print
             amiconf = raw_input('Do you want to continue, type y or n? ') 
@@ -196,17 +215,17 @@ AMI_ID="""
                 clear()
                 print
                 print "Updating AMI..."
-                status = os.chdir(bm+sl+brenda)
+                os.chdir(bm+sl+brenda)
                 file = open("ami.py", "w")
                 w = """# An AMI that contains Blender and Brenda (may be None)
 AMI_ID="""
-                file.write(w+q+ami+q)
+                file.write(w+q+ami_user+q)
                 file.close()
                 spacetime ()
                 print
                 print "AMI Updated"
                 spacetime()
-                status = os.chdir(bm)
+                os.chdir(bm)
                 break
             if amiconf=='n':
                 clear()
@@ -215,7 +234,7 @@ AMI_ID="""
 def nproj ():
     while True:
         print
-        print "Select your Blender project file (should not be zipped and must be packed)"
+        print "Select your Blender project file (should not be zipped and must be packed)..."
         time.sleep(1)
         root = Tk()
         root.withdraw()
@@ -235,43 +254,53 @@ def nproj ():
         print
         print "2. zip and upload "+projfilename
         print
-        print "3. update the brenda.conf file"
+        print "3. reset work queue"
         print
         print
         nprojconf = raw_input('Do you want to continue, type y or n? ') 
         if nprojconf=='y':
             clear()
 
-            #gets path of project file in s3 bucket
+            #gets various variables
             from os.path import expanduser
             home = expanduser("~")
-            status = os.chdir(home)
-            cp = ConfigParser.SafeConfigParser()
-            cp.readfp(FakeSecHead(open('.brenda.conf')))
-            BLENDER_PROJECT = cp.get('asection', 'BLENDER_PROJECT')
-            projbucketname = urlparse.urlsplit(BLENDER_PROJECT).netloc
+            os.chdir(home)
+            parser = ConfigParser.ConfigParser()
+            parser.readfp(FakeSecHead(open('.brenda.conf')))
+            #find original values
+            a = parser.get('asection', 'INSTANCE_TYPE')
+            b = parser.get('asection', 'BLENDER_PROJECT')
+            c = parser.get('asection', 'WORK_QUEUE')
+            d = parser.get('asection', 'RENDER_OUTPUT')
+            e = parser.get('asection', 'DONE')
+            f = parser.get('asection', 'FRAME_OR_SUBFRAME')
+            g = parser.get('asection', 'TILE')
+            h = parser.get('asection', 'NUMBER_INSTANCES')
+            i = parser.get('asection', 'PRICE_BID')
+            j = parser.get('asection', 'FILE_TYPE')
+            k = parser.get('asection', 'START_FRAME')
+            l = parser.get('asection', 'END_FRAME')
+
+            #create new options
+            a_nm = 'INSTANCE_TYPE='
+            b_nm = 'BLENDER_PROJECT='
+            c_nm = 'WORK_QUEUE='
+            d_nm = 'RENDER_OUTPUT='
+            e_nm = 'DONE='
+            f_nm = 'FRAME_OR_SUBFRAME='
+            g_nm = 'TILE='
+            h_nm = 'NUMBER_INSTANCES='
+            i_nm = 'PRICE_BID='
+            j_nm = 'FILE_TYPE='
+            k_nm = 'START_FRAME='
+            l_nm = 'END_FRAME='
+            z = '\n'
+
+            projbucketname = urlparse.urlsplit(b).netloc
             projbucketpath = 's3://'+projbucketname
 
-
-            #gets sqs work queue name
-            from os.path import expanduser
-            home = expanduser("~")
-            status = os.chdir(home)
-            cp = ConfigParser.SafeConfigParser()
-            cp.readfp(FakeSecHead(open('.brenda.conf')))
-            workqpath = cp.get('asection', 'WORK_QUEUE')
-
-            #gets frame bucket path
-            from os.path import expanduser
-            home = expanduser("~")
-            status = os.chdir(home)
-            cp = ConfigParser.SafeConfigParser()
-            cp.readfp(FakeSecHead(open('.brenda.conf')))
-            framebucketpath = cp.get('asection', 'RENDER_OUTPUT')
-
-
             #changes to s3cmd working directory
-            status = os.chdir(ps)
+            os.chdir(ps)
 
 
             #deletes all old project files
@@ -281,10 +310,10 @@ def nproj ():
 
             #deletes all old frames
             print
-            status = os.system('python s3cmd del -r -f '+framebucketpath)
+            status = os.system('python s3cmd del -r -f '+d)
             clear()
             print
-            print "Deleted"
+            print "Files in project and frame buckets deleted"
             spacetime()
 
             #zips and moves selected file to s3 bucket
@@ -300,6 +329,9 @@ def nproj ():
             output.close()
             os.chdir(ps)
             os.system('python s3cmd put --no-mime-magic --multipart-chunk-size-mb=5 '+projfilepath+sl+zippedprojfilename+sb+projbucketpath)
+            clear()
+            print
+            print 'Project file uploaded'
             spacetime()
 
             #deletes zipped file from users pc
@@ -308,28 +340,15 @@ def nproj ():
 
             #changes reference in config file
             home = expanduser("~")
-            status = os.chdir(home)
+            os.chdir(home)
             file = open(".brenda.conf", "w")
-            print
-            print "Updating Brenda configuration file..."
-            u = """INSTANCE_TYPE=c3.large
-BLENDER_PROJECT=s3://"""
-            v = '/'
-            w = """
-WORK_QUEUE="""
-            x = """
-RENDER_OUTPUT="""
-            y = """
-DONE=shutdown
-\n"""
-            file.write(u+projbucketname+v+zippedprojfilename+w+workqpath+x+framebucketpath+y)
+            b = projbucketpath+sl+zippedprojfilename
+            newconfig = a_nm+a+z+b_nm+b+z+c_nm+c+z+d_nm+d+z+e_nm+e+z+f_nm+f+z+g_nm+g+z+h_nm+h+z+i_nm+i+z+j_nm+j+z+k_nm+k+z+l_nm+l
+            file.write(newconfig)
             file.close()
             status = os.chdir(bm)
-            spacetime ()
-            print
-            print "Done"
+            resetworkqueue()
             spacetime()
-            status = os.chdir(bm)
             break
         if nprojconf=='n':
             clear()
@@ -366,8 +385,64 @@ def workqinit ():
         print
         print "Request cancelled"
         return
-    queue = py+bw+t+ft+s+sframe+sb+e+eframe+sb+pu
+
+    from os.path import expanduser
+    home = expanduser("~")
+    os.chdir(home)
+    parser = ConfigParser.ConfigParser()
+    parser.readfp(FakeSecHead(open('.brenda.conf')))
+    a = parser.get('asection', 'INSTANCE_TYPE')
+    b = parser.get('asection', 'BLENDER_PROJECT')
+    c = parser.get('asection', 'WORK_QUEUE')
+    d = parser.get('asection', 'RENDER_OUTPUT')
+    e = parser.get('asection', 'DONE')
+    f = parser.get('asection', 'FRAME_OR_SUBFRAME')
+    g = parser.get('asection', 'TILE')
+    h = parser.get('asection', 'NUMBER_INSTANCES')
+    i = parser.get('asection', 'PRICE_BID')
+    j = parser.get('asection', 'FILE_TYPE')
+    k = parser.get('asection', 'START_FRAME')
+    l = parser.get('asection', 'END_FRAME')
+    #new values
+    k = sframe
+    l = eframe
+    #create new options
+    a_nm = 'INSTANCE_TYPE='
+    b_nm = 'BLENDER_PROJECT='
+    c_nm = 'WORK_QUEUE='
+    d_nm = 'RENDER_OUTPUT='
+    e_nm = 'DONE='
+    f_nm = 'FRAME_OR_SUBFRAME='
+    g_nm = 'TILE='
+    h_nm = 'NUMBER_INSTANCES='
+    i_nm = 'PRICE_BID='
+    j_nm = 'FILE_TYPE='
+    k_nm = 'START_FRAME='
+    l_nm = 'END_FRAME='
+    z = '\n'
+
+
+    if f == 'frame':
+        queue = py+bw+t+ft+strt+k+sb+end+l+sb+pu
+
+    if f == 'subframe':
+        queue = py+bw+t+sft+strt+k+sb+end+l+sb+xsize+g+sb+ysize+g+sb+pu
+    os.chdir(bm)
     status = os.system(queue)
+    print
+    print
+    if status == 0:
+        os.chdir(home)
+        #write to file
+        newconfig = a_nm+a+z+b_nm+b+z+c_nm+c+z+d_nm+d+z+e_nm+e+z+f_nm+f+z+g_nm+g+z+h_nm+h+z+i_nm+i+z+j_nm+j+z+k_nm+k+z+l_nm+l
+        file = open(".brenda.conf", "w")
+        file.write(newconfig)
+        file.close()
+        os.chdir(bm)
+        print 'Work queue has been built'
+    if status == 1:
+        print 'There was an error building work queue'
+    print
     print
     exit = raw_input('Enter any key to return ')
 
@@ -389,6 +464,48 @@ def prices():
     status = os.system(spotrequest)
     print
     exit = raw_input('Enter any key to return ')
+
+def job_summary():
+    from os.path import expanduser
+    home = expanduser("~")
+    status = os.chdir(home)
+    cp = ConfigParser.SafeConfigParser()
+    cp.readfp(FakeSecHead(open('.brenda.conf')))
+    BLENDER_PROJECT = cp.get('asection', 'BLENDER_PROJECT')
+    projbucketname = urlparse.urlsplit(BLENDER_PROJECT).netloc
+    projname = BLENDER_PROJECT.split('/')[-1]
+    projname = os.path.splitext(projname)[0]
+    RENDER_OUTPUT = cp.get('asection', 'RENDER_OUTPUT')
+    FRAME_OR_SUBFRAME = cp.get('asection', 'FRAME_OR_SUBFRAME')
+    START_FRAME = cp.get('asection', 'START_FRAME')
+    END_FRAME = cp.get('asection', 'END_FRAME')
+    TILE = cp.get('asection', 'TILE')
+    framebucket = urlparse.urlsplit(RENDER_OUTPUT).netloc
+    reload(ami)
+
+    intstartframe = int(START_FRAME)
+    intendframe = int(END_FRAME)
+    totalframe = intendframe-intstartframe
+
+    print "\n\n"
+    print " %-25s %-15s" % ('AMI used',ami.AMI_ID)
+    print
+    print " %-25s %-15s" % ('Project name',projname)
+    print
+    print " %-25s %-15s" % ('Frame or sub-frame',FRAME_OR_SUBFRAME)
+    if FRAME_OR_SUBFRAME == 'subframe':
+        x = 'x'
+        print
+        print " %-25s %-15s" % ('Tile grid',TILE+x+TILE)
+    print
+    print " %-25s %-15s" % ('Start frame',START_FRAME)
+    print
+    print " %-25s %-15s" % ('End frame',END_FRAME)
+    print
+    print " %-25s %-15s" % ('Total frames',totalframe)
+    print "\n\n"
+    exit = raw_input('Enter any key to return ')
+    status = os.chdir(bm)
 
 
 def instance():
@@ -450,11 +567,19 @@ def instanceinit ():
     instrequest = py+br+i+type+sb+n+amount+sb+p+price+sb+spot
     status = os.system(instrequest)
     print
+    print
+    if status == 0:
+        print 'Instance/s have been initiated'
+    if status == 1:
+        print 'There was an error initiating Instances'
+    print
+    print
     exit = raw_input('Enter any key to return ')
         
 def setupmenu ():
     while True:
         clear()
+        status = os.chdir(bm)
         setupmenuoptions()
         setuptask = raw_input('Which task would you like to perform? ')    
         if setuptask=='m':
@@ -462,15 +587,20 @@ def setupmenu ():
             break
         if setuptask=='u':  
             clear()
-            ami()
-        if setuptask=='n':  
+            amis()
+        if setuptask=='n':
             clear()
             nproj()
+        if setuptask=='f':  
+            clear()
+            frames()
         if setuptask=='b':  
             clear()
             workq()
             workqinit()
-
+        if setuptask=='j':
+            clear()
+            job_summary()
         if setuptask=='p':  
             clear()
             prices()
@@ -498,6 +628,7 @@ def monmenuoptions ():
 def monmenu ():
     while True:
         clear()
+        status = os.chdir(bm)
         monmenuoptions()
         montask = raw_input('Which task would you like to perform? ')    
         if montask=='m':
@@ -640,7 +771,7 @@ def downmenu ():
             root = Tk()
             root.withdraw()
             print
-            print "Select a folder to download frames to"
+            print "Select a folder to download frames to..."
             time.sleep(1)
             dir = askdirectory(parent=root, title='Select a folder to download frames to')
             root.destroy()
@@ -672,7 +803,7 @@ def downmenu ():
             root = Tk()
             root.withdraw()
             print
-            print "Select a folder to download frames to"
+            print "Select a folder to download frames to..."
             time.sleep(1)
             dir = askdirectory(parent=root, title='Select a folder to download frames to')
             root.destroy()
@@ -719,6 +850,7 @@ def cancelmenuoptions ():
 def cancelmenu ():
     while True:
         clear()
+        status = os.chdir(bm)
         cancelmenuoptions()
         canceltask = raw_input('Which task would you like to perform? ')    
         if canceltask=='m':
@@ -726,19 +858,14 @@ def cancelmenu ():
             break  
         if canceltask=='r':  
             clear()
-            print
-            status = os.system(py+bw+rs)
-            if status==0:
-                print
-                print "Work queue has been reset"
-            if status==1:
-                print
-                print
-                print
-                print "There was a problem, please try waiting 60 seconds or use an alternative method" 
+            resetworkqueue()
             print
             print
             exit = raw_input('Enter any key to return ')
+
+
+
+
         if canceltask=='s':  
             clear()
             print
@@ -751,7 +878,7 @@ def cancelmenu ():
                 print
                 print
                 print
-                print "There was a problem, please try waiting 60 seconds or use an alternative method" 
+                print "There was a problem, please try an alternative method" 
             print
             print
             exit = raw_input('Enter any key to return ')
@@ -767,7 +894,7 @@ def cancelmenu ():
                 print
                 print
                 print
-                print "There was a problem, please try waiting 60 seconds or use an alternative method" 
+                print "There was a problem, please try an alternative method" 
             print
             print
             exit = raw_input('Enter any key to return ')
@@ -776,8 +903,8 @@ def cancelmenu ():
 def inidup ():
     from os.path import expanduser
     home = expanduser("~")
-    there = os.path.isfile(home+ap+ini)
-    if there == False:
+    s3cmd_there = os.path.isfile(home+ap+ini)
+    if s3cmd_there == False:
         clear()
         shutil.copyfile(home+sl+scf, home+ap+scf)
         os.rename(home+ap+scf, home+ap+ini)
@@ -791,7 +918,7 @@ def toolchange ():
     with open(bm+sl+brenda+sl+x, 'w') as file:
         file.writelines( data )
 
-
+#This checks the version number and shows a notification if there is a newer version up on github
 def vercheck ():
     clear()
     urllib.urlretrieve ("http://www.thegreyroompost.com/win_brenda/win_brenda.ini", "win_brenda.ini")
@@ -809,10 +936,244 @@ def vercheck ():
         print 
         spacetime()
 
+#This checks frame and subframe options in .conf file
+def confadd ():
+    from os.path import expanduser
+    home = expanduser("~")
+    os.chdir(home)
+    parser = ConfigParser.ConfigParser()
+    parser.readfp(FakeSecHead(open('.brenda.conf')))
+    fos = parser.has_option('asection', 'FRAME_OR_SUBFRAME')
+    if fos == False:
+        #find original values
+        a = parser.get('asection', 'INSTANCE_TYPE')
+        b = parser.get('asection', 'BLENDER_PROJECT')
+        c = parser.get('asection', 'WORK_QUEUE')
+        d = parser.get('asection', 'RENDER_OUTPUT')
+        e = parser.get('asection', 'DONE')
+        #new values
+        f = 'frame'
+        g = 'non'
+        h = '0'
+        i = '0.00'
+        j = 'png'
+        k = '0'
+        l = '0'
+        #create new options
+        a_nm = 'INSTANCE_TYPE='
+        b_nm = 'BLENDER_PROJECT='
+        c_nm = 'WORK_QUEUE='
+        d_nm = 'RENDER_OUTPUT='
+        e_nm = 'DONE='
+        f_nm = 'FRAME_OR_SUBFRAME='
+        g_nm = 'TILE='
+        h_nm = 'NUMBER_INSTANCES='
+        i_nm = 'PRICE_BID='
+        j_nm = 'FILE_TYPE='
+        k_nm = 'START_FRAME='
+        l_nm = 'END_FRAME='
+        z = '\n'
+        #write to file
+        newconfig = a_nm+a+z+b_nm+b+z+c_nm+c+z+d_nm+d+z+e_nm+e+z+f_nm+f+z+g_nm+g+z+h_nm+h+z+i_nm+i+z+j_nm+j+z+k_nm+k+z+l_nm+l
+        file = open(".brenda.conf", "w")
+        file.write(newconfig)
+        file.close()
+
+def frames ():
+    while True:
+        clear()
+        print
+        print 'f = full frames'
+        print 's = sub-frames tiles'
+        print
+        print
+        framechoice = raw_input('Would you like instances to render full frames or sub-frame tiles? ')
+
+        if framechoice == 'f':
+            clear()
+            from os.path import expanduser
+            home = expanduser("~")
+            os.chdir(home)
+            parser = ConfigParser.ConfigParser()
+            parser.readfp(FakeSecHead(open('.brenda.conf')))
+            #find original values
+            a = parser.get('asection', 'INSTANCE_TYPE')
+            b = parser.get('asection', 'BLENDER_PROJECT')
+            c = parser.get('asection', 'WORK_QUEUE')
+            d = parser.get('asection', 'RENDER_OUTPUT')
+            e = parser.get('asection', 'DONE')
+            f = parser.get('asection', 'FRAME_OR_SUBFRAME')
+            g = parser.get('asection', 'TILE')
+            h = parser.get('asection', 'NUMBER_INSTANCES')
+            i = parser.get('asection', 'PRICE_BID')
+            j = parser.get('asection', 'FILE_TYPE')
+            k = parser.get('asection', 'START_FRAME')
+            l = parser.get('asection', 'END_FRAME')
+            #new values
+            f = 'frame'
+            g = 'non'
+            #create new options
+            a_nm = 'INSTANCE_TYPE='
+            b_nm = 'BLENDER_PROJECT='
+            c_nm = 'WORK_QUEUE='
+            d_nm = 'RENDER_OUTPUT='
+            e_nm = 'DONE='
+            f_nm = 'FRAME_OR_SUBFRAME='
+            g_nm = 'TILE='
+            h_nm = 'NUMBER_INSTANCES='
+            i_nm = 'PRICE_BID='
+            j_nm = 'FILE_TYPE='
+            k_nm = 'START_FRAME='
+            l_nm = 'END_FRAME='
+            z = '\n'
+            #write to file
+            newconfig = a_nm+a+z+b_nm+b+z+c_nm+c+z+d_nm+d+z+e_nm+e+z+f_nm+f+z+g_nm+g+z+h_nm+h+z+i_nm+i+z+j_nm+j+z+k_nm+k+z+l_nm+l
+            file = open(".brenda.conf", "w")
+            file.write(newconfig)
+            file.close()
+            print
+            print 'Changed to full frame rendering'
+            spacetime()
+            break
+
+        if framechoice == 's':
+            clear()
+            print
+            print 'a = 64 8x8'
+            print 'b = 16 4x4'
+            print 'c = 4  2x2'
+            print
+            print
+            tilechoice = raw_input('How many tiles will frames be split into? ')
+            clear()
+            if tilechoice =='a':
+                tileval = '8'
+            if tilechoice =='b':
+                tileval = '4'
+            if tilechoice =='c':
+                tileval = '2'
+            from os.path import expanduser
+            home = expanduser("~")
+            os.chdir(home)
+            parser = ConfigParser.ConfigParser()
+            parser.readfp(FakeSecHead(open('.brenda.conf')))
+            a = parser.get('asection', 'INSTANCE_TYPE')
+            b = parser.get('asection', 'BLENDER_PROJECT')
+            c = parser.get('asection', 'WORK_QUEUE')
+            d = parser.get('asection', 'RENDER_OUTPUT')
+            e = parser.get('asection', 'DONE')
+            f = parser.get('asection', 'FRAME_OR_SUBFRAME')
+            g = parser.get('asection', 'TILE')
+            h = parser.get('asection', 'NUMBER_INSTANCES')
+            i = parser.get('asection', 'PRICE_BID')
+            j = parser.get('asection', 'FILE_TYPE')
+            k = parser.get('asection', 'START_FRAME')
+            l = parser.get('asection', 'END_FRAME')
+            #new values
+            f = 'subframe'
+            g = tileval
+            #create new options
+            a_nm = 'INSTANCE_TYPE='
+            b_nm = 'BLENDER_PROJECT='
+            c_nm = 'WORK_QUEUE='
+            d_nm = 'RENDER_OUTPUT='
+            e_nm = 'DONE='
+            f_nm = 'FRAME_OR_SUBFRAME='
+            g_nm = 'TILE='
+            h_nm = 'NUMBER_INSTANCES='
+            i_nm = 'PRICE_BID='
+            j_nm = 'FILE_TYPE='
+            k_nm = 'START_FRAME='
+            l_nm = 'END_FRAME='
+            z = '\n'
+            #write to file
+            newconfig = a_nm+a+z+b_nm+b+z+c_nm+c+z+d_nm+d+z+e_nm+e+z+f_nm+f+z+g_nm+g+z+h_nm+h+z+i_nm+i+z+j_nm+j+z+k_nm+k+z+l_nm+l
+            file = open(".brenda.conf", "w")
+            file.write(newconfig)
+            file.close()
+            print
+            print 'Changed to sub-frame rendering'
+            spacetime()
+            break
+            
+def resetworkqueue():
+    print
+    status = os.system(py+bw+rs)
+    if status==0:
+        from os.path import expanduser
+        home = expanduser("~")
+        os.chdir(home)
+        parser = ConfigParser.ConfigParser()
+        parser.readfp(FakeSecHead(open('.brenda.conf')))
+        #find original values
+        a = parser.get('asection', 'INSTANCE_TYPE')
+        b = parser.get('asection', 'BLENDER_PROJECT')
+        c = parser.get('asection', 'WORK_QUEUE')
+        d = parser.get('asection', 'RENDER_OUTPUT')
+        e = parser.get('asection', 'DONE')
+        f = parser.get('asection', 'FRAME_OR_SUBFRAME')
+        g = parser.get('asection', 'TILE')
+        h = parser.get('asection', 'NUMBER_INSTANCES')
+        i = parser.get('asection', 'PRICE_BID')
+        j = parser.get('asection', 'FILE_TYPE')
+        k = parser.get('asection', 'START_FRAME')
+        l = parser.get('asection', 'END_FRAME')
+        #new values
+        k = '0'
+        l = '0'
+        #create new options
+        a_nm = 'INSTANCE_TYPE='
+        b_nm = 'BLENDER_PROJECT='
+        c_nm = 'WORK_QUEUE='
+        d_nm = 'RENDER_OUTPUT='
+        e_nm = 'DONE='
+        f_nm = 'FRAME_OR_SUBFRAME='
+        g_nm = 'TILE='
+        h_nm = 'NUMBER_INSTANCES='
+        i_nm = 'PRICE_BID='
+        j_nm = 'FILE_TYPE='
+        k_nm = 'START_FRAME='
+        l_nm = 'END_FRAME='
+        z = '\n'
+        #write to file
+        newconfig = a_nm+a+z+b_nm+b+z+c_nm+c+z+d_nm+d+z+e_nm+e+z+f_nm+f+z+g_nm+g+z+h_nm+h+z+i_nm+i+z+j_nm+j+z+k_nm+k+z+l_nm+l
+        file = open(".brenda.conf", "w")
+        file.write(newconfig)
+        file.close()
+        print
+        print "Work queue has been reset"
+    if status==1:
+        print
+        print
+        print
+        print "There was a problem resetting work queue, please try waiting 60 seconds"
+
+        
+
+
+
+def subframecreate ():
+    status = os.chdir(bm)
+    subframe_template_there = os.path.isfile('subframe-template')
+    if subframe_template_there == False:
+        file = open("subframe-template", "w")
+        file.write("""cat >subframe.py <<EOF
+import bpy
+bpy.context.scene.render.border_min_x = $SF_MIN_X
+bpy.context.scene.render.border_max_x = $SF_MAX_X
+bpy.context.scene.render.border_min_y = $SF_MIN_Y
+bpy.context.scene.render.border_max_y = $SF_MAX_Y
+bpy.context.scene.render.use_border = True
+EOF
+blender -b *.blend -P subframe.py -F PNG -o $OUTDIR/frame_######_X-$SF_MIN_X-$SF_MAX_X-Y-$SF_MIN_Y-$SF_MAX_Y -s $START -e $END -j $STEP -t 0 -a""")
+        file.close()
+
 
 
 
 vercheck()
+subframecreate()
 toolchange()
 inidup()
+confadd()
 mainmenu()
