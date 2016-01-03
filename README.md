@@ -3,7 +3,7 @@
 *WARNING, THIS IS MY FIRST PYTHON PROJECT AND IT MAY HAVE SERIOUS ISSUES WHICH COULD COST YOU MONEY.*
 
 03/01/2016 **UPDATE - Sub-frame rendering now an option**
-Sub-frame rendering is now an option ("frame settings") in the "setting up your farm" menu. Also there is now a "job summary" available too. Various other updates too.
+Sub-frame rendering is now an option ("frame settings") in the "setting up your farm" menu. Also there is now a "job summary" available too. Various other improvements.
 
 31/12/2015 **UPDATE - AMIs now selectable**
 List of recommended AMIs is now selectable. Also, if I've uploaded a newer version of win_brenda_console than the one you're running, a notification will pop up at the start.
