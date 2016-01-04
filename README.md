@@ -2,6 +2,9 @@
 
 *WARNING, THIS IS MY FIRST PYTHON PROJECT AND IT MAY HAVE SERIOUS ISSUES WHICH COULD COST YOU MONEY.*
 
+04/01/2016 **UPDATE - Frame format now selectable**
+Frame formats such as JPEG etc. can now be selected.
+
 03/01/2016 **UPDATE - Sub-frame rendering now an option**
 Sub-frame rendering is now an option. Choose "frame settings" in the "setting up your farm" menu. Also there is a "job summary" available too. Various other improvements.
 
