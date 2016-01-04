@@ -13,7 +13,7 @@ import urllib
 import sys
 
 
-thisver = 201601031610
+thisver = 201601042350
 
 def spacetime ():
     time.sleep(2)
@@ -27,7 +27,6 @@ def menerror():
  
 
 clear = lambda: os.system('cls')
-
 
 ft = 'frame-template '
 sft = 'subframe-template '
@@ -69,12 +68,13 @@ sl = '/'
 scf = '.s3cfg'
 brenda = 'brenda'
 q = '"'
+ff = '-F'
 
 sys.path.insert(0, bm+sl+brenda)
 import ami
 
 
-status = os.chdir(bm)
+os.chdir(bm)
 
 
 
@@ -113,7 +113,7 @@ def setupmenuoptions ():
     print
     print
     print "u = Update AMI"
-    print "n = New project"
+    print "n = New project upload"
     print "f = Frame settings"
     print "b = Build work queue"
     print "p = Price of instance"
@@ -234,11 +234,11 @@ AMI_ID="""
 def nproj ():
     while True:
         print
-        print "Select your Blender project file (should not be zipped and must be packed)..."
+        print "Select your Blender project file (must be packed)..."
         time.sleep(1)
         root = Tk()
         root.withdraw()
-        projfile = askopenfilename(parent=root, title='select your zipped and packed Blender project file')
+        projfile = askopenfilename(parent=root, title='select your packed Blender project file')
         root.destroy()
         clear()
         projfilename = os.path.basename(os.path.abspath(projfile))
@@ -346,7 +346,7 @@ def nproj ():
             newconfig = a_nm+a+z+b_nm+b+z+c_nm+c+z+d_nm+d+z+e_nm+e+z+f_nm+f+z+g_nm+g+z+h_nm+h+z+i_nm+i+z+j_nm+j+z+k_nm+k+z+l_nm+l
             file.write(newconfig)
             file.close()
-            status = os.chdir(bm)
+            #status = os.chdir(bm)
             resetworkqueue()
             spacetime()
             break
@@ -472,6 +472,7 @@ def job_summary():
     cp = ConfigParser.SafeConfigParser()
     cp.readfp(FakeSecHead(open('.brenda.conf')))
     BLENDER_PROJECT = cp.get('asection', 'BLENDER_PROJECT')
+    FILE_TYPE = cp.get('asection', 'FILE_TYPE')
     projbucketname = urlparse.urlsplit(BLENDER_PROJECT).netloc
     projname = BLENDER_PROJECT.split('/')[-1]
     projname = os.path.splitext(projname)[0]
@@ -486,8 +487,10 @@ def job_summary():
     intstartframe = int(START_FRAME)
     intendframe = int(END_FRAME)
     totalframe = intendframe-intstartframe+1
+    if FILE_TYPE =='specifiedinfile':
+        FILE_TYPE = 'as specified in uploaded .blend file'
 
-    print "\n\n"
+    print "\n"
     print " %-25s %-15s" % ('AMI used',ami.AMI_ID)
     print
     print " %-25s %-15s" % ('Project name',projname)
@@ -498,6 +501,8 @@ def job_summary():
         print
         print " %-25s %-15s" % ('Tile grid',TILE+x+TILE)
     print
+    print " %-25s %-15s" % ('Frame format',FILE_TYPE)
+    print 
     print " %-25s %-15s" % ('Start frame',START_FRAME)
     print
     print " %-25s %-15s" % ('End frame',END_FRAME)
@@ -864,8 +869,6 @@ def cancelmenu ():
             exit = raw_input('Enter any key to return ')
 
 
-
-
         if canceltask=='s':  
             clear()
             print
@@ -983,121 +986,235 @@ def frames ():
     while True:
         clear()
         print
-        print 'f = full frames'
-        print 's = sub-frames tiles'
+        print "m = Go to main menu"
         print
         print
-        framechoice = raw_input('Would you like instances to render full frames or sub-frame tiles? ')
+        print 'w = Whole frames'
+        print 's = Sub-frames tiles'
+        print 'f = File format '
+        print
+        print
+        conf = read_conf_values()
+        framechoice = raw_input('Choose frame option: ')
+        if framechoice == 'm':
+            break
 
-        if framechoice == 'f':
+        if framechoice == 'w':
             clear()
-            from os.path import expanduser
-            home = expanduser("~")
-            os.chdir(home)
-            parser = ConfigParser.ConfigParser()
-            parser.readfp(FakeSecHead(open('.brenda.conf')))
-            #find original values
-            a = parser.get('asection', 'INSTANCE_TYPE')
-            b = parser.get('asection', 'BLENDER_PROJECT')
-            c = parser.get('asection', 'WORK_QUEUE')
-            d = parser.get('asection', 'RENDER_OUTPUT')
-            e = parser.get('asection', 'DONE')
-            f = parser.get('asection', 'FRAME_OR_SUBFRAME')
-            g = parser.get('asection', 'TILE')
-            h = parser.get('asection', 'NUMBER_INSTANCES')
-            i = parser.get('asection', 'PRICE_BID')
-            j = parser.get('asection', 'FILE_TYPE')
-            k = parser.get('asection', 'START_FRAME')
-            l = parser.get('asection', 'END_FRAME')
             #new values
             f = 'frame'
             g = 'non'
-            #create new options
-            a_nm = 'INSTANCE_TYPE='
-            b_nm = 'BLENDER_PROJECT='
-            c_nm = 'WORK_QUEUE='
-            d_nm = 'RENDER_OUTPUT='
-            e_nm = 'DONE='
-            f_nm = 'FRAME_OR_SUBFRAME='
-            g_nm = 'TILE='
-            h_nm = 'NUMBER_INSTANCES='
-            i_nm = 'PRICE_BID='
-            j_nm = 'FILE_TYPE='
-            k_nm = 'START_FRAME='
-            l_nm = 'END_FRAME='
-            z = '\n'
             #write to file
-            newconfig = a_nm+a+z+b_nm+b+z+c_nm+c+z+d_nm+d+z+e_nm+e+z+f_nm+f+z+g_nm+g+z+h_nm+h+z+i_nm+i+z+j_nm+j+z+k_nm+k+z+l_nm+l
-            file = open(".brenda.conf", "w")
-            file.write(newconfig)
-            file.close()
+            newconfig = conf.a_nm+conf.a+conf.z+conf.b_nm+conf.b+conf.z+conf.c_nm+conf.c+conf.z+conf.d_nm+conf.d+conf.z+conf.e_nm+conf.e+conf.z+conf.f_nm+f+conf.z+conf.g_nm+g+conf.z+conf.h_nm+conf.h+conf.z+conf.i_nm+conf.i+conf.z+conf.j_nm+conf.j+conf.z+conf.k_nm+conf.k+conf.z+conf.l_nm+conf.l
+            confwrite(newconfig)
             print
-            print 'Changed to full frame rendering'
+            print 'Changed to whole frame rendering'
             spacetime()
-            break
+
 
         if framechoice == 's':
-            clear()
-            print
-            print 'a = 64 8x8'
-            print 'b = 16 4x4'
-            print 'c = 4  2x2'
-            print
-            print
-            tilechoice = raw_input('How many tiles will frames be split into? ')
-            clear()
-            if tilechoice =='a':
-                tileval = '8'
-            if tilechoice =='b':
-                tileval = '4'
-            if tilechoice =='c':
-                tileval = '2'
-            from os.path import expanduser
-            home = expanduser("~")
-            os.chdir(home)
-            parser = ConfigParser.ConfigParser()
-            parser.readfp(FakeSecHead(open('.brenda.conf')))
-            a = parser.get('asection', 'INSTANCE_TYPE')
-            b = parser.get('asection', 'BLENDER_PROJECT')
-            c = parser.get('asection', 'WORK_QUEUE')
-            d = parser.get('asection', 'RENDER_OUTPUT')
-            e = parser.get('asection', 'DONE')
-            f = parser.get('asection', 'FRAME_OR_SUBFRAME')
-            g = parser.get('asection', 'TILE')
-            h = parser.get('asection', 'NUMBER_INSTANCES')
-            i = parser.get('asection', 'PRICE_BID')
-            j = parser.get('asection', 'FILE_TYPE')
-            k = parser.get('asection', 'START_FRAME')
-            l = parser.get('asection', 'END_FRAME')
-            #new values
-            f = 'subframe'
-            g = tileval
-            #create new options
-            a_nm = 'INSTANCE_TYPE='
-            b_nm = 'BLENDER_PROJECT='
-            c_nm = 'WORK_QUEUE='
-            d_nm = 'RENDER_OUTPUT='
-            e_nm = 'DONE='
-            f_nm = 'FRAME_OR_SUBFRAME='
-            g_nm = 'TILE='
-            h_nm = 'NUMBER_INSTANCES='
-            i_nm = 'PRICE_BID='
-            j_nm = 'FILE_TYPE='
-            k_nm = 'START_FRAME='
-            l_nm = 'END_FRAME='
-            z = '\n'
-            #write to file
-            newconfig = a_nm+a+z+b_nm+b+z+c_nm+c+z+d_nm+d+z+e_nm+e+z+f_nm+f+z+g_nm+g+z+h_nm+h+z+i_nm+i+z+j_nm+j+z+k_nm+k+z+l_nm+l
-            file = open(".brenda.conf", "w")
-            file.write(newconfig)
-            file.close()
-            print
-            print 'Changed to sub-frame rendering'
-            spacetime()
-            break
-            
+            while True:
+                clear()
+                print
+                print 'a = 64 8x8'
+                print 'b = 16 4x4'
+                print 'c = 4  2x2'
+                print
+                print
+                tilechoice = raw_input('How many tiles will frames be split into? ')
+                clear()              
+                if tilechoice =='a':
+                    #new value
+                    f = 'subframe'
+                    g = '8'
+                    #write to file
+                    newconfig = conf.a_nm+conf.a+conf.z+conf.b_nm+conf.b+conf.z+conf.c_nm+conf.c+conf.z+conf.d_nm+conf.d+conf.z+conf.e_nm+conf.e+conf.z+conf.f_nm+f+conf.z+conf.g_nm+g+conf.z+conf.h_nm+conf.h+conf.z+conf.i_nm+conf.i+conf.z+conf.j_nm+conf.j+conf.z+conf.k_nm+conf.k+conf.z+conf.l_nm+conf.l
+                    confwrite(newconfig)
+                    print
+                    print 'Changed to sub-frame rendering'
+                    spacetime()
+                    break
+
+                if tilechoice =='b':
+                    #new value
+                    f = 'subframe'
+                    g = '4'
+                    #write to file
+                    newconfig = conf.a_nm+conf.a+conf.z+conf.b_nm+conf.b+conf.z+conf.c_nm+conf.c+conf.z+conf.d_nm+conf.d+conf.z+conf.e_nm+conf.e+conf.z+conf.f_nm+f+conf.z+conf.g_nm+g+conf.z+conf.h_nm+conf.h+conf.z+conf.i_nm+conf.i+conf.z+conf.j_nm+conf.j+conf.z+conf.k_nm+conf.k+conf.z+conf.l_nm+conf.l
+                    confwrite(newconfig)
+                    print
+                    print 'Changed to sub-frame rendering'
+                    spacetime()
+                    break
+                if tilechoice =='c':
+                    #new value
+                    f = 'subframe'
+                    g = '2'
+                    #write to file
+                    newconfig = conf.a_nm+conf.a+conf.z+conf.b_nm+conf.b+conf.z+conf.c_nm+conf.c+conf.z+conf.d_nm+conf.d+conf.z+conf.e_nm+conf.e+conf.z+conf.f_nm+f+conf.z+conf.g_nm+g+conf.z+conf.h_nm+conf.h+conf.z+conf.i_nm+conf.i+conf.z+conf.j_nm+conf.j+conf.z+conf.k_nm+conf.k+conf.z+conf.l_nm+conf.l
+                    confwrite(newconfig)
+                    print
+                    print 'Changed to sub-frame rendering'
+                    spacetime()
+                    break
+
+        if framechoice == 'f':
+            while True:
+                clear()
+                print
+                print 'p = PNG'
+                print 'e = EXR'
+                print 'j = JPEG'
+                print 't = TIFF'
+                print 'f = Format specified in uploaded .blend file'
+                print
+                print
+                formatchoice = raw_input('Enter the file format you wish frames to be rendered in? ')
+                if formatchoice=='p':
+                    #new values
+                    j = 'PNG'
+                    clear()
+                    frametemplateformat(sb+ff+sb+j+sb)
+                    subframetemplateformat(sb+ff+sb+j+sb)
+                    #write to file
+                    newconfig = conf.a_nm+conf.a+conf.z+conf.b_nm+conf.b+conf.z+conf.c_nm+conf.c+conf.z+conf.d_nm+conf.d+conf.z+conf.e_nm+conf.e+conf.z+conf.f_nm+conf.f+conf.z+conf.g_nm+conf.g+conf.z+conf.h_nm+conf.h+conf.z+conf.i_nm+conf.i+conf.z+conf.j_nm+j+conf.z+conf.k_nm+conf.k+conf.z+conf.l_nm+conf.l
+                    confwrite(newconfig)
+                    clear()
+                    print
+                    print 'Changed frame format to '+j
+                    spacetime()
+                    break
+
+                if formatchoice=='e':
+                    j = 'EXR'
+                    clear()
+                    frametemplateformat(sb+ff+sb+j+sb)
+                    subframetemplateformat(sb+ff+sb+j+sb)
+                    #write to file
+                    newconfig = conf.a_nm+conf.a+conf.z+conf.b_nm+conf.b+conf.z+conf.c_nm+conf.c+conf.z+conf.d_nm+conf.d+conf.z+conf.e_nm+conf.e+conf.z+conf.f_nm+conf.f+conf.z+conf.g_nm+conf.g+conf.z+conf.h_nm+conf.h+conf.z+conf.i_nm+conf.i+conf.z+conf.j_nm+j+conf.z+conf.k_nm+conf.k+conf.z+conf.l_nm+conf.l
+                    confwrite(newconfig)
+                    clear()
+                    print
+                    print 'Changed frame format to '+j
+                    spacetime()
+                    break
+
+                if formatchoice=='j':
+                    j = 'JPEG'
+                    clear()
+                    frametemplateformat(sb+ff+sb+j+sb)
+                    subframetemplateformat(sb+ff+sb+j+sb)                
+                    #write to file
+                    newconfig = conf.a_nm+conf.a+conf.z+conf.b_nm+conf.b+conf.z+conf.c_nm+conf.c+conf.z+conf.d_nm+conf.d+conf.z+conf.e_nm+conf.e+conf.z+conf.f_nm+conf.f+conf.z+conf.g_nm+conf.g+conf.z+conf.h_nm+conf.h+conf.z+conf.i_nm+conf.i+conf.z+conf.j_nm+j+conf.z+conf.k_nm+conf.k+conf.z+conf.l_nm+conf.l
+                    confwrite(newconfig)
+                    clear()
+                    print
+                    print 'Changed frame format to '+j
+                    spacetime()
+                    break
+
+                if formatchoice=='t':
+                    j = 'TIFF'
+                    clear()
+                    frametemplateformat(sb+ff+sb+j+sb)
+                    subframetemplateformat(sb+ff+sb+j+sb)
+                    #write to file
+                    newconfig = conf.a_nm+conf.a+conf.z+conf.b_nm+conf.b+conf.z+conf.c_nm+conf.c+conf.z+conf.d_nm+conf.d+conf.z+conf.e_nm+conf.e+conf.z+conf.f_nm+conf.f+conf.z+conf.g_nm+conf.g+conf.z+conf.h_nm+conf.h+conf.z+conf.i_nm+conf.i+conf.z+conf.j_nm+j+conf.z+conf.k_nm+conf.k+conf.z+conf.l_nm+conf.l
+                    confwrite(newconfig)
+                    clear()
+                    print
+                    print 'Changed frame format to '+j
+                    spacetime()
+                    break
+
+                if formatchoice=='f':
+                    frametemplateformat(sb)
+                    subframetemplateformat(sb)
+                    #new values
+                    j = 'specifiedinfile'
+                    #write to file
+                    newconfig = conf.a_nm+conf.a+conf.z+conf.b_nm+conf.b+conf.z+conf.c_nm+conf.c+conf.z+conf.d_nm+conf.d+conf.z+conf.e_nm+conf.e+conf.z+conf.f_nm+conf.f+conf.z+conf.g_nm+conf.g+conf.z+conf.h_nm+conf.h+conf.z+conf.i_nm+conf.i+conf.z+conf.j_nm+j+conf.z+conf.k_nm+conf.k+conf.z+conf.l_nm+conf.l
+                    confwrite(newconfig)
+                    clear()
+                    print
+                    print 'Changed to format specified in uploaded .blend file'
+                    spacetime()
+                    break
+
+
+def frametemplateformat(newformat):
+    os.chdir(bm)
+    fpart = 'blender -b *.blend'
+    lpart = '-o $OUTDIR/frame_###### -s $START -e $END -j $STEP -t 0 -a'
+    file = open("frame-template", "w")
+    file.write(fpart+newformat+lpart)
+    file.close()
+
+def subframetemplateformat(newformat):
+    os.chdir(bm)
+    fpart = """cat >subframe.py <<EOF
+import bpy
+bpy.context.scene.render.border_min_x = $SF_MIN_X
+bpy.context.scene.render.border_max_x = $SF_MAX_X
+bpy.context.scene.render.border_min_y = $SF_MIN_Y
+bpy.context.scene.render.border_max_y = $SF_MAX_Y
+bpy.context.scene.render.use_border = True
+EOF
+blender -b *.blend -P subframe.py"""
+    lpart = """-o $OUTDIR/frame_######_X-$SF_MIN_X-$SF_MAX_X-Y-$SF_MIN_Y-$SF_MAX_Y -s $START -e $END -j $STEP -t 0 -a"""
+    file = open("subframe-template", "w")
+    file.write(fpart+newformat+lpart)
+    file.close()
+
+
+class read_conf_values():
+    from os.path import expanduser
+    home = expanduser("~")
+    os.chdir(home)
+    parser = ConfigParser.ConfigParser()
+    parser.readfp(FakeSecHead(open('.brenda.conf')))
+    a = parser.get('asection', 'INSTANCE_TYPE')
+    b = parser.get('asection', 'BLENDER_PROJECT')
+    c = parser.get('asection', 'WORK_QUEUE')
+    d = parser.get('asection', 'RENDER_OUTPUT')
+    e = parser.get('asection', 'DONE')
+    f = parser.get('asection', 'FRAME_OR_SUBFRAME')
+    g = parser.get('asection', 'TILE')
+    h = parser.get('asection', 'NUMBER_INSTANCES')
+    i = parser.get('asection', 'PRICE_BID')
+    j = parser.get('asection', 'FILE_TYPE')
+    k = parser.get('asection', 'START_FRAME')
+    l = parser.get('asection', 'END_FRAME')
+    #create new options
+    a_nm = 'INSTANCE_TYPE='
+    b_nm = 'BLENDER_PROJECT='
+    c_nm = 'WORK_QUEUE='
+    d_nm = 'RENDER_OUTPUT='
+    e_nm = 'DONE='
+    f_nm = 'FRAME_OR_SUBFRAME='
+    g_nm = 'TILE='
+    h_nm = 'NUMBER_INSTANCES='
+    i_nm = 'PRICE_BID='
+    j_nm = 'FILE_TYPE='
+    k_nm = 'START_FRAME='
+    l_nm = 'END_FRAME='
+    z = '\n'
+    os.chdir(bm)
+
+
+def confwrite(newconfig):
+    from os.path import expanduser
+    home = expanduser("~")
+    os.chdir(home)
+    file = open(".brenda.conf", "w")
+    file.write(newconfig)
+    file.close()
+    os.chdir(bm)
+
+
+
 def resetworkqueue():
-    print
+    os.chdir(bm)
     status = os.system(py+bw+rs)
     if status==0:
         from os.path import expanduser
@@ -1147,8 +1264,8 @@ def resetworkqueue():
         print
         print
         print "There was a problem resetting work queue, please try waiting 60 seconds"
+    os.chdir(bm)
 
-        
 
 
 
