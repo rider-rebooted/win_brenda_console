@@ -11,7 +11,7 @@ Frame formats such as JPEG etc. can now be selected.
 03/01/2016 **UPDATE - Sub-frame rendering now an option**
 Choose "frame settings" in the "setting up your farm" menu. Also there is a "job summary" available too. Various other improvements.
 
-
+Simple console for operating James Yonan's [Brenda](https://github.com/jamesyonan/brenda) for Blender on Windows without command lines. Brenda is an open source piece of software which lets you render Blender projects with very low cost (compared to render farms) AWS Amazon computing instances.
 
 Features
 
@@ -22,10 +22,6 @@ Features
 * Select frame formats or use the format specified in the uploaded .blend project file.
 * Notification at start if I've uploaded a newer version of win_brenda_console than the one you are using.
 * frame or sub-frame rendering with tilesize options
-
-
-
-Simple console for operating James Yonan's [Brenda](https://github.com/jamesyonan/brenda) for Blender on Windows without command lines. Brenda is an open source piece of software which lets you render Blender projects with very low cost (compared to render farms) AWS Amazon computing instances.
 
 I wrote this for myself but thought others might find it useful. It's my first Python program so i'm sure it has issues but seems to work ok for me. I've only put in the commands I use for now but may add more.
  
