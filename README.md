@@ -11,6 +11,8 @@ Frame formats such as JPEG etc. can now be selected.
 03/01/2016 **UPDATE - Sub-frame rendering now an option**
 Choose "frame settings" in the "setting up your farm" menu. Also there is a "job summary" available too. Various other improvements.
 
+
+
 Features
 
 * No command lines or manually changing configuration files
