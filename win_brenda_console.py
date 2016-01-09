@@ -13,7 +13,7 @@ import urllib
 import sys
 
 
-thisver = 201601042350
+thisver = 201601091430
 
 def spacetime ():
     time.sleep(2)
@@ -84,10 +84,10 @@ def mainmenuoptions ():
     print
     print
     print
-    print "s = Setting up your farm"
-    print "m = Managing your farm"
-    print "d = Download rendered frames"
-    print "c = Canceling and resetting your farm"
+    print " s = Setting up your farm"
+    print " m = Managing your farm"
+    print " d = Download rendered frames"
+    print " c = Canceling and resetting your farm"
     print
     print
 
@@ -95,7 +95,7 @@ def mainmenu ():
     while True:
         clear()
         mainmenuoptions ()
-        submen = raw_input('Which task would you like to perform? ')
+        submen = raw_input(' Which task would you like to perform? ')
         if submen =='s':           
             setupmenu()    
         if submen =='m':           
@@ -109,16 +109,14 @@ def mainmenu ():
 
 def setupmenuoptions ():
     print 
-    print "m = Go to main menu"
+    print " m = Go to main menu"
     print
     print
-    print "u = Update AMI"
-    print "n = New project upload"
-    print "f = Frame settings"
-    print "b = Build work queue"
-    print "p = Price of instance"
-    print "j = Job summary"
-    print "i = Initiate instances"
+    print " a = AMI"
+    print " p = Project"
+    print " f = Frames"
+    print " i = Instances"
+    print " r = Review details"
     print
     print
 
@@ -140,90 +138,78 @@ def amis ():
     while True:
         clear()
         print
-        print 'Current AMI = '+ami.AMI_ID
+        print ' Current AMI = '+ami.AMI_ID
         print
         print
         print
-        print 'Recommended compatible AMIs...'
+        print ' Recommended compatible AMIs...'
         print
         print
-        print "a = "+adesc
+        print " a = "+adesc
         print
-        print "b = "+bdesc
+        print " b = "+bdesc
         print
-        print "c = "+cdesc
+        print " c = "+cdesc
         print
         print
         print
-        amiconf = raw_input('Choose an AMI or enter "e" to input your own: ')
+        amiconf = raw_input(' Choose an AMI or enter "e" to input your own: ')
         if amiconf =='a':
             clear()
-            print
-            print "Updating AMI..."
             os.chdir(bm+sl+brenda)
             file = open("ami.py", "w")
             w = """# An AMI that contains Blender and Brenda (may be None)
 AMI_ID="""
             file.write(w+q+a+q)
             file.close()
-            spacetime ()
             print
-            print "AMI Updated"
+            print " Changed AMI to "+a
             spacetime()
             break
         if amiconf =='b':
             clear()
-            print
-            print "Updating AMI..."
             os.chdir(bm+sl+brenda)
             file = open("ami.py", "w")
             w = """# An AMI that contains Blender and Brenda (may be None)
 AMI_ID="""
             file.write(w+q+b+q)
             file.close()
-            spacetime ()
             print
-            print "AMI Updated"
+            print " Changed AMI to "+b
             spacetime()
             break
         if amiconf =='c':
             clear()
-            print
-            print "Updating AMI..."
             os.chdir(bm+sl+brenda)
             file = open("ami.py", "w")
             w = """# An AMI that contains Blender and Brenda (may be None)
 AMI_ID="""
             file.write(w+q+c+q)
             file.close()
-            spacetime ()
             print
-            print "AMI Updated"
+            print " Changed AMI to "+c
             spacetime()
             break
         if amiconf =='e':
             clear()
             print
-            ami_user = raw_input('Enter the new public AMI you wish to use: ')
+            ami_user = raw_input(' Enter the new public AMI you wish to use: ')
             clear()
             print
-            print 'Your new AMI will be changed to '+q+ami_user+q
+            print ' Your new AMI will be changed to '+q+ami_user+q
             print
             print
-            amiconf = raw_input('Do you want to continue, type y or n? ') 
+            amiconf = raw_input(' Do you want to continue, type y or n? ') 
             if amiconf=='y':
                 clear()
-                print
-                print "Updating AMI..."
                 os.chdir(bm+sl+brenda)
                 file = open("ami.py", "w")
                 w = """# An AMI that contains Blender and Brenda (may be None)
 AMI_ID="""
                 file.write(w+q+ami_user+q)
                 file.close()
-                spacetime ()
                 print
-                print "AMI Updated"
+                print " Changed AMI to "+ami_user
                 spacetime()
                 os.chdir(bm)
                 break
@@ -234,30 +220,30 @@ AMI_ID="""
 def nproj ():
     while True:
         print
-        print "Select your Blender project file (must be packed)..."
+        print " Select your Blender project file (must be packed)..."
         time.sleep(1)
         root = Tk()
         root.withdraw()
-        projfile = askopenfilename(parent=root, title='select your packed Blender project file')
+        projfile = askopenfilename(parent=root, title='Select your packed Blender project file')
         root.destroy()
         clear()
         projfilename = os.path.basename(os.path.abspath(projfile))
         projfilepath = os.path.dirname(os.path.abspath(projfile))
         print
-        print "***WARNING***"
+        print " ***WARNING***"
         print
         print
-        print "This will..." 
+        print " This will..." 
         print
         print
-        print "1. delete all files in your frame and project buckets"
+        print " 1. delete all files in your frame and project buckets"
         print
-        print "2. zip and upload "+projfilename
+        print " 2. zip and upload "+projfilename
         print
-        print "3. reset work queue"
+        print " 3. reset work queue"
         print
         print
-        nprojconf = raw_input('Do you want to continue, type y or n? ') 
+        nprojconf = raw_input(' Do you want to continue, type y or n? ') 
         if nprojconf=='y':
             clear()
 
@@ -313,12 +299,14 @@ def nproj ():
             status = os.system('python s3cmd del -r -f '+d)
             clear()
             print
-            print "Files in project and frame buckets deleted"
+            print " Files in project and frame buckets have been deleted"
             spacetime()
 
             #zips and moves selected file to s3 bucket
             print
-            print "Zipping and uploading project file..."
+            print " Zipping and uploading project file..."
+            print
+            print " This may take a while"
             print
             os.chdir(projfilepath)
             zipper = '.zip'
@@ -331,7 +319,7 @@ def nproj ():
             os.system('python s3cmd put --no-mime-magic --multipart-chunk-size-mb=5 '+projfilepath+sl+zippedprojfilename+sb+projbucketpath)
             clear()
             print
-            print 'Project file uploaded'
+            print ' Project file has been uploaded'
             spacetime()
 
             #deletes zipped file from users pc
@@ -355,98 +343,40 @@ def nproj ():
             break
 
 def workq ():
-    global sframe
-    global eframe
-    global qconf
     while True:
-        print
-        sframe = raw_input('Animation start frame? ')
         clear()
         print
-        eframe = raw_input('Animation end frame? ')       
+        sframe = raw_input(' Animation start frame? ')
         clear()
         print
-        print "Your animation starts at frame "+sframe,"and ends at frame "+eframe
+        eframe = raw_input(' Animation end frame? ')       
+        clear()
         print
-        qconf = raw_input('Are these values correct, y or n? (c to cancel and return) ')  
+        print " Your animation starts at frame "+sframe,"and ends at frame "+eframe
+        print
+        qconf = raw_input(' Are these values correct, y or n? ')  
         if qconf=='y':
             clear()
-            break
-        if qconf=='c':
-            clear()
+            conf = read_conf_values()
+            #new values
+            k = sframe
+            l = eframe
+            newconfig = conf.a_nm+conf.a+conf.z+conf.b_nm+conf.b+conf.z+conf.c_nm+conf.c+conf.z+conf.d_nm+conf.d+conf.z+conf.e_nm+conf.e+conf.z+conf.f_nm+conf.f+conf.z+conf.g_nm+conf.g+conf.z+conf.h_nm+conf.h+conf.z+conf.i_nm+conf.i+conf.z+conf.j_nm+conf.j+conf.z+conf.k_nm+k+conf.z+conf.l_nm+l
+            confwrite(newconfig)
+            print
+            print ' Frame range changed ( '+k,'- '+l,')'
+            spacetime()
             break
         if qconf=='n':
             clear()
-        else:
-            clear()
+            print
+            print ' Frame range not changed'
+            spacetime()
+            break
                 
-def workqinit ():    
-    if qconf == 'c':
-        print
-        print "Request cancelled"
-        return
-
-    from os.path import expanduser
-    home = expanduser("~")
-    os.chdir(home)
-    parser = ConfigParser.ConfigParser()
-    parser.readfp(FakeSecHead(open('.brenda.conf')))
-    a = parser.get('asection', 'INSTANCE_TYPE')
-    b = parser.get('asection', 'BLENDER_PROJECT')
-    c = parser.get('asection', 'WORK_QUEUE')
-    d = parser.get('asection', 'RENDER_OUTPUT')
-    e = parser.get('asection', 'DONE')
-    f = parser.get('asection', 'FRAME_OR_SUBFRAME')
-    g = parser.get('asection', 'TILE')
-    h = parser.get('asection', 'NUMBER_INSTANCES')
-    i = parser.get('asection', 'PRICE_BID')
-    j = parser.get('asection', 'FILE_TYPE')
-    k = parser.get('asection', 'START_FRAME')
-    l = parser.get('asection', 'END_FRAME')
-    #new values
-    k = sframe
-    l = eframe
-    #create new options
-    a_nm = 'INSTANCE_TYPE='
-    b_nm = 'BLENDER_PROJECT='
-    c_nm = 'WORK_QUEUE='
-    d_nm = 'RENDER_OUTPUT='
-    e_nm = 'DONE='
-    f_nm = 'FRAME_OR_SUBFRAME='
-    g_nm = 'TILE='
-    h_nm = 'NUMBER_INSTANCES='
-    i_nm = 'PRICE_BID='
-    j_nm = 'FILE_TYPE='
-    k_nm = 'START_FRAME='
-    l_nm = 'END_FRAME='
-    z = '\n'
-
-
-    if f == 'frame':
-        queue = py+bw+t+ft+strt+k+sb+end+l+sb+pu
-
-    if f == 'subframe':
-        queue = py+bw+t+sft+strt+k+sb+end+l+sb+xsize+g+sb+ysize+g+sb+pu
-    os.chdir(bm)
-    status = os.system(queue)
-    print
-    print
-    if status == 0:
-        os.chdir(home)
-        #write to file
-        newconfig = a_nm+a+z+b_nm+b+z+c_nm+c+z+d_nm+d+z+e_nm+e+z+f_nm+f+z+g_nm+g+z+h_nm+h+z+i_nm+i+z+j_nm+j+z+k_nm+k+z+l_nm+l
-        file = open(".brenda.conf", "w")
-        file.write(newconfig)
-        file.close()
-        os.chdir(bm)
-        print 'Work queue has been built'
-    if status == 1:
-        print 'There was an error building work queue'
-    print
-    print
-    exit = raw_input('Enter any key to return ')
 
 def prices():
+    clear()
     spinstype = 'c1.xlarge'
     spotrequest = py+br+i+spinstype+sb+spotprice
     status = os.system(spotrequest)
@@ -463,170 +393,217 @@ def prices():
     spotrequest = py+br+i+spinstype+sb+spotprice
     status = os.system(spotrequest)
     print
-    exit = raw_input('Enter any key to return ')
+    exit = raw_input(' Enter any key to return ')
 
-def job_summary():
-    from os.path import expanduser
-    home = expanduser("~")
-    status = os.chdir(home)
-    cp = ConfigParser.SafeConfigParser()
-    cp.readfp(FakeSecHead(open('.brenda.conf')))
-    BLENDER_PROJECT = cp.get('asection', 'BLENDER_PROJECT')
-    FILE_TYPE = cp.get('asection', 'FILE_TYPE')
-    projbucketname = urlparse.urlsplit(BLENDER_PROJECT).netloc
-    projname = BLENDER_PROJECT.split('/')[-1]
-    projname = os.path.splitext(projname)[0]
-    RENDER_OUTPUT = cp.get('asection', 'RENDER_OUTPUT')
-    FRAME_OR_SUBFRAME = cp.get('asection', 'FRAME_OR_SUBFRAME')
-    START_FRAME = cp.get('asection', 'START_FRAME')
-    END_FRAME = cp.get('asection', 'END_FRAME')
-    TILE = cp.get('asection', 'TILE')
-    framebucket = urlparse.urlsplit(RENDER_OUTPUT).netloc
-    reload(ami)
+def reviewjob():
+    while True:
+        clear()
+        conf = read_conf_values()
+        b = conf.b
+        projbucketname = urlparse.urlsplit(conf.b).netloc
+        projname = b.split('/')[-1]
+        projname = os.path.splitext(projname)[0]
+        framebucket = urlparse.urlsplit(conf.d).netloc
+        reload(ami)
+        intstartframe = int(conf.k)
+        intendframe = int(conf.l)
+        totalframe = intendframe-intstartframe+1
+        if conf.j =='specifiedinfile':
+            conf.j = 'as specified in uploaded .blend file'
+        cost = Decimal(conf.i)
+        number = Decimal(conf.h)
+        math = cost*number
+        print "\n"
+        print " %-25s %-15s" % ('AMI used',ami.AMI_ID)
+        print " %-25s %-15s" % ('Project name',projname)
+        print " %-25s %-15s" % ('Start frame',conf.k)
+        print " %-25s %-15s" % ('End frame',conf.l)
+        print " %-25s %-15s" % ('Total frames',totalframe)
+        print " %-25s %-15s" % ('Frame or sub-frame',conf.f)
+        if conf.f == 'subframe':
+            x = 'x'
+            print " %-25s %-15s" % ('Tile grid',conf.g+x+conf.g)
+        print " %-25s %-15s" % ('Frame format',conf.j)
+        print " %-25s %-15s" % ('Instance type',conf.a)
+        print " %-25s %-15s" % ('Number of instances',conf.h)
+        print " %-25s %-15s" % ('Bid per instance',conf.i)
+        print " %-25s %-15s" % ('Cost per hour',math)
+        print "\n\n"
+        rconf = raw_input(' Would you like to start the job, y or n? ')  
+        if rconf == 'n':
+            clear()
+            print
+            print ' Job not started'
+            spacetime()
+            break
+        if rconf =='y':
+            clear()
+            print
+            print ' This will build work queue and initiate instances'
+            print 
+            print
+            doublerconf = raw_input(' Are you sure, y or n? ')
 
-    intstartframe = int(START_FRAME)
-    intendframe = int(END_FRAME)
-    totalframe = intendframe-intstartframe+1
-    if FILE_TYPE =='specifiedinfile':
-        FILE_TYPE = 'as specified in uploaded .blend file'
+            if doublerconf =='n':
+                clear()
+                print
+                print ' Job not started'
+                spacetime()
+                break
 
-    print "\n"
-    print " %-25s %-15s" % ('AMI used',ami.AMI_ID)
-    print
-    print " %-25s %-15s" % ('Project name',projname)
-    print
-    print " %-25s %-15s" % ('Frame or sub-frame',FRAME_OR_SUBFRAME)
-    if FRAME_OR_SUBFRAME == 'subframe':
-        x = 'x'
-        print
-        print " %-25s %-15s" % ('Tile grid',TILE+x+TILE)
-    print
-    print " %-25s %-15s" % ('Frame format',FILE_TYPE)
-    print 
-    print " %-25s %-15s" % ('Start frame',START_FRAME)
-    print
-    print " %-25s %-15s" % ('End frame',END_FRAME)
-    print
-    print " %-25s %-15s" % ('Total frames',totalframe)
-    print "\n\n"
-    exit = raw_input('Enter any key to return ')
-    status = os.chdir(bm)
+            if doublerconf == 'y':
+                clear()
+                os.chdir(bm)
+                if conf.f == 'frame':
+                    queue = py+bw+t+ft+strt+conf.k+sb+end+conf.l+sb+pu
+
+                if conf.f == 'subframe':
+                    queue = py+bw+t+sft+strt+conf.k+sb+end+conf.l+sb+xsize+conf.g+sb+ysize+conf.g+sb+pu
+
+                status = os.system(queue)
+
+                if status == 1:
+                    print '\n'
+                    print ' There was an error building work queue'
+                    spacetime()
+                    break
+
+                if status == 0:
+                    clear()
+                    print '\n'
+                    print ' Work queue has been built'
+                    spacetime()
+                    instrequest = py+br+i+conf.a+sb+n+conf.h+sb+p+conf.i+sb+spot
+                    clear()
+                    print instrequest
+                    status = os.system(instrequest)
+                    print
+                    print
+                    if status == 1:
+                        print '\n'
+                        print ' There was an error initiating Instances'
+                        spacetime()
+                        resetworkqueue()
+                        print
+                        print
+                        exit = raw_input(' Enter any key to return ')
+                        break
+                    if status == 0:
+                        print '\n'
+                        print ' Instance/s have been initiated'
+                        spacetime()
+                        break
+
+
+
+
 
 
 def instance():
-    global amount
-    global price
-    global iconf
+
     while True:
-        print
-        print "a = c1.xlarge"
-        print "b = c3.large"
-        print "c = c3.xlarge"
-        print "d = c3.2xlarge"
-        print
-        inst = raw_input('Which instance would you like to use? ')
         clear()
         print
-        amount = raw_input('How many instances would you like to initiate? ')
+        print " a = c1.xlarge"
+        print " b = c3.large"
+        print " c = c3.xlarge"
+        print " d = c3.2xlarge"
+        print
+        inst = raw_input(' Which instance would you like to use? ')
         clear()
         print
-        price = raw_input('How much would you like to bid per instance hour? ')
+        amount = raw_input(' How many instances would you like to initiate? ')
+        clear()
+        print
+        price = raw_input(' How much would you like to bid per instance hour (#.##)? ')
         clear()
         global type
         while True:
             if inst == 'a':
-                type = 'c1.xlarge'
+                instype = 'c1.xlarge'
                 break
             if inst == 'b':
-                type = 'c3.large'
+                instype = 'c3.large'
                 break
             if inst == 'c':
-                type = 'c3.xlarge'
+                instype = 'c3.xlarge'
                 break
             if inst == 'd':
-                type = 'c3.2xlarge'
+                instype = 'c3.2xlarge'
                 break
         print
-        print "You are bidding for "+amount,"X"+sb+type,"at a cost of $ "+price,"per instance."
+        print " You are bidding for "+amount,"X"+sb+instype,"at a cost of $ "+price,"per instance."
         print
         amountD = Decimal(amount)
         priceD = Decimal(price)
         math = (amountD*priceD)
-        print 'This will cost you $',math, 'per hour'
+        print ' This will cost you $',math, 'per hour'
         print
-        iconf = raw_input('Are these values correct, y or n? (c to cancel and return) ')  
+        print
+        iconf = raw_input(' Are these values correct, y or n? ')  
         if iconf=='y':
             clear()
+            conf = read_conf_values()
+            #new values
+            h = amount
+            a = instype
+            i = price
+            newconfig = conf.a_nm+a+conf.z+conf.b_nm+conf.b+conf.z+conf.c_nm+conf.c+conf.z+conf.d_nm+conf.d+conf.z+conf.e_nm+conf.e+conf.z+conf.f_nm+conf.f+conf.z+conf.g_nm+conf.g+conf.z+conf.h_nm+h+conf.z+conf.i_nm+i+conf.z+conf.j_nm+conf.j+conf.z+conf.k_nm+conf.k+conf.z+conf.l_nm+conf.l
+            confwrite(newconfig)
+            print
+            print ' Instance information has been changed to'
+            print
+            print ' '+h,'x '+a,'instances @ $'+i,'each per hour'
+            spacetime()
             break
-        if iconf=='c':
-            clear()
-            break
+
         if iconf =='n':
             clear()
+            print
+            print ' Instance information not changed'
+            spacetime()
+            break
 
-def instanceinit ():
-    if iconf == 'c':
-        print
-        print "Request cancelled"
-        return   
-    instrequest = py+br+i+type+sb+n+amount+sb+p+price+sb+spot
-    status = os.system(instrequest)
-    print
-    print
-    if status == 0:
-        print 'Instance/s have been initiated'
-    if status == 1:
-        print 'There was an error initiating Instances'
-    print
-    print
-    exit = raw_input('Enter any key to return ')
+
         
 def setupmenu ():
     while True:
         clear()
         status = os.chdir(bm)
         setupmenuoptions()
-        setuptask = raw_input('Which task would you like to perform? ')    
+        setuptask = raw_input(' Which task would you like to perform? ')    
         if setuptask=='m':
             clear()
             break
-        if setuptask=='u':  
+        if setuptask=='a':  
             clear()
             amis()
-        if setuptask=='n':
+        if setuptask=='p':
             clear()
             nproj()
-        if setuptask=='f':  
+        if setuptask=='f':
             clear()
             frames()
-        if setuptask=='b':  
-            clear()
-            workq()
-            workqinit()
-        if setuptask=='j':
-            clear()
-            job_summary()
-        if setuptask=='p':  
-            clear()
-            prices()
-
         if setuptask=='i':  
             clear()
-            instance()
-            instanceinit()
+            instancemenu()
+        if setuptask=='r':
+            clear()
+            reviewjob()
+
 
 def monmenuoptions ():
     print 
-    print "m = Go to main menu"
+    print " m = Go to main menu"
     print
     print
-    print "w = Work queue status"
-    print "r = Run status"
-    print "u = Uptime of instances"
-    print "t = Tail log from instances"
-    print "f = Farm performance"
-    print "c = Instance task (frame) count"
-    print "p = Prune instances"
+    print " w = Work queue status"
+    print " r = Run status"
+    print " u = Uptime of instances"
+    print " t = Tail log from instances"
+    print " f = Farm performance"
+    print " c = Instance task (frame) count"
+    print " p = Prune instances"
     print
     print
 
@@ -635,7 +612,7 @@ def monmenu ():
         clear()
         status = os.chdir(bm)
         monmenuoptions()
-        montask = raw_input('Which task would you like to perform? ')    
+        montask = raw_input(' Which task would you like to perform? ')    
         if montask=='m':
             clear()
             break
@@ -645,52 +622,52 @@ def monmenu ():
             status = os.system(py+bw+st)      
             print
             print
-            exit = raw_input('Enter any key to return ')
+            exit = raw_input(' Enter any key to return ')
         if montask=='r':  
             clear()
             print
             os.system(py+br+st)     
             print
             print
-            exit = raw_input('Enter any key to return ')
+            exit = raw_input(' Enter any key to return ')
         if montask=='u':           
             clear()
             print
             os.system(py+bt+sh+ut)      
             print
             print
-            exit = raw_input('Enter any key to return ')
+            exit = raw_input(' Enter any key to return ')
         if montask=='t':           
             clear()
             print
             os.system(py+bt+sh+tl)      
             print
             print
-            exit = raw_input('Enter any key to return ')
+            exit = raw_input(' Enter any key to return ')
         if montask=='f':           
             clear()
             print
             os.system(py+bt+pf)    
             print  
             print
-            exit = raw_input('Enter any key to return ')
+            exit = raw_input(' Enter any key to return ')
         if montask=='c':           
             clear()
             print
             os.system(py+bt+sh+tc)      
             print
             print
-            exit = raw_input('Enter any key to return ')
+            exit = raw_input(' Enter any key to return ')
         if montask=='p':           
             clear()
             while True:
                 print
-                print 'Would you like to do a dry run?'
+                print ' Would you like to do a dry run?'
                 print
-                print 'y = Yes'
-                print 'n = No'
+                print ' y = Yes'
+                print ' n = No'
                 print
-                dry = raw_input('Enter your choice ')
+                dry = raw_input(' Enter your choice ')
                 if dry==('y'):
                     dry = 'y'
                     break
@@ -700,20 +677,20 @@ def monmenu ():
             clear()
             while True:
                 print
-                print 'Would you like to only prune instances close to transitioning'
-                print 'to their next billable hour?'
+                print ' Would you like to only prune instances close to transitioning'
+                print ' to their next billable hour?'
                 print
-                print 'y = Yes'
-                print 'n = No'
+                print ' y = Yes'
+                print ' n = No'
                 print
-                trans = raw_input('Enter your choice ')
+                trans = raw_input(' Enter your choice ')
                 if trans=='y':
                     clear()
                     print
-                    uptime = raw_input('What should the minimum uptime (in minutes) of pruned instances be? ')
+                    uptime = raw_input(' What should the minimum uptime (in minutes) of pruned instances be? ')
                     clear()
                     print
-                    inprunet = raw_input('How many instances would you like to reduce the farm to? ')
+                    inprunet = raw_input(' How many instances would you like to reduce the farm to? ')
                     clear()
                     if dry =='y':
                         close = py+bt+t+dflag+smlt+uptime+sb+pru+inprunet
@@ -721,13 +698,13 @@ def monmenu ():
                         close = py+bt+t+smlt+uptime+sb+pru+inprunet
                     os.system(close)
                     print
-                    exit = raw_input('Enter any key to return ')
+                    exit = raw_input(' Enter any key to return ')
                     clear()
                     break                
                 if trans=='n':
                     clear()
                     print
-                    inprune = raw_input('How many instances would you like to reduce the farm to? ')
+                    inprune = raw_input(' How many instances would you like to reduce the farm to? ')
                     clear()
                     if dry =='y':
                         close2 = py+bt+t+dflag+pru+inprune
@@ -735,17 +712,17 @@ def monmenu ():
                         close2 = py+bt+t+pru+inprune
                     os.system(close2)
                     print
-                    exit = raw_input('Enter any key to return ')
+                    exit = raw_input(' Enter any key to return ')
                     clear()
                     break
 
 def downmenuoptions ():
     print 
-    print "m = Go to main menu"
+    print " m = Go to main menu"
     print
     print
-    print "o = One time download to local folder"
-    print "r = Regular download to local folder (to avoid a large final download)"
+    print " o = One time download to local folder"
+    print " r = Regular download to local folder (to avoid a large final download)"
     print
     print
 
@@ -767,7 +744,7 @@ def downmenu ():
     while True:
         clear()
         downmenuoptions()
-        downtask = raw_input('which task would you like to perform? ')
+        downtask = raw_input(' Which task would you like to perform? ')
         if downtask =='m':
             clear()
             break
@@ -776,13 +753,13 @@ def downmenu ():
             root = Tk()
             root.withdraw()
             print
-            print "Select a folder to download frames to..."
+            print " Select a folder to download frames to..."
             time.sleep(1)
             dir = askdirectory(parent=root, title='Select a folder to download frames to')
             root.destroy()
             clear()
             print
-            print "Downloading frames..."
+            print " Downloading frames..."
             print  
             from os.path import expanduser
             home = expanduser("~")
@@ -794,21 +771,21 @@ def downmenu ():
             status = os.system('python s3cmd get -r --skip-existing '+RENDER_OUTPUT+sb+dir)
             clear()
             print
-            print "Frames have been downloaded"
+            print " Frames have been downloaded"
             print
             print
-            exit = raw_input('Enter any key to return ')
+            exit = raw_input(' Enter any key to return ')
             status = os.chdir(bm)
         if downtask =='r': 
             clear()
             print
-            tinterval = raw_input('Time interval between checking for new frames and downloading (minutes)? ')
+            tinterval = raw_input(' Time interval between checking for new frames and downloading (minutes)? ')
             t = int(tinterval)*60
             clear()
             root = Tk()
             root.withdraw()
             print
-            print "Select a folder to download frames to..."
+            print " Select a folder to download frames to..."
             time.sleep(1)
             dir = askdirectory(parent=root, title='Select a folder to download frames to')
             root.destroy()
@@ -822,18 +799,18 @@ def downmenu ():
             try:
                 while True:
                     print
-                    print "Checking for new frames every "+tinterval,"minutes"
+                    print " Checking for new frames every "+tinterval,"minutes"
                     print
-                    print """Press "control-c" to stop regular download and return"""
+                    print """ Press "control-c" to stop regular download and return"""
                     print
                     status = os.chdir(ps)
                     status = os.system('python s3cmd get -r --skip-existing '+RENDER_OUTPUT+sb+dir)
                     status = os.chdir(bm)
                     clear()
                     print
-                    print "Checking for new frames every "+tinterval,"minutes"
+                    print " Checking for new frames every "+tinterval,"minutes"
                     print
-                    print """Press "control-c" to stop regular download and return"""
+                    print """ Press "control-c" to stop regular download and return"""
                     print
                     time.sleep(t)
                     clear()
@@ -843,12 +820,12 @@ def downmenu ():
 
 def cancelmenuoptions ():
     print 
-    print "m = Go to main menu"
+    print " m = Go to main menu"
     print
     print
-    print "r = Reset work queue"
-    print "s = Stop all running instances"
-    print "c = Cancel pending spot requests"
+    print " r = Reset work queue"
+    print " s = Stop all running instances"
+    print " c = Cancel pending spot requests"
     print
     print
 
@@ -857,7 +834,7 @@ def cancelmenu ():
         clear()
         status = os.chdir(bm)
         cancelmenuoptions()
-        canceltask = raw_input('Which task would you like to perform? ')    
+        canceltask = raw_input(' Which task would you like to perform? ')    
         if canceltask=='m':
             clear()           
             break  
@@ -866,7 +843,7 @@ def cancelmenu ():
             resetworkqueue()
             print
             print
-            exit = raw_input('Enter any key to return ')
+            exit = raw_input(' Enter any key to return ')
 
 
         if canceltask=='s':  
@@ -876,15 +853,15 @@ def cancelmenu ():
             if status==0:
                 print
                 print
-                print "Instances have been stopped"
+                print " Instances have been stopped"
             if status==1:
                 print
                 print
                 print
-                print "There was a problem, please try an alternative method" 
+                print " There was a problem, please try an alternative method" 
             print
             print
-            exit = raw_input('Enter any key to return ')
+            exit = raw_input(' Enter any key to return ')
         if canceltask=='c':  
             clear()
             print
@@ -892,15 +869,15 @@ def cancelmenu ():
             if status==0:
                 print
                 print
-                print "Pending spot requests have been cancelled"
+                print " Pending spot requests have been cancelled"
             if status==1:
                 print
                 print
                 print
-                print "There was a problem, please try an alternative method" 
+                print " There was a problem, please try an alternative method" 
             print
             print
-            exit = raw_input('Enter any key to return ')
+            exit = raw_input(' Enter any key to return ')
 
 #This recreates the original "s3cmd.ini" file by making a duplicate of the ".s3cmd" file created by win_brenda_installer, renaming it to "s3cmd.ini" and moving it back
 def inidup ():
@@ -933,9 +910,9 @@ def vercheck ():
     if ghver > thisver:
         print
         print
-        print "UPDATED VERSION AVAILABLE"
+        print " UPDATED VERSION AVAILABLE"
         print 
-        print "Check github"
+        print " Check github"
         print 
         spacetime()
 
@@ -982,22 +959,55 @@ def confadd ():
         file.write(newconfig)
         file.close()
 
+
+
+def instancemenu ():
+    while True:
+        clear()
+        print
+        print ' m = Go to main menu'
+        print
+        print
+        print ' p = Prices'
+        print ' c = Choose instances'
+        print
+        print
+        conf = read_conf_values()
+        instchoice = raw_input(' Choose frame option: ')
+
+        if instchoice == 'm':
+            break
+
+        if instchoice == 'p':
+            prices()
+
+        if instchoice == 'c':
+            instance()
+
+
+
+
 def frames ():
     while True:
         clear()
         print
-        print "m = Go to main menu"
+        print ' m = Go to main menu'
         print
         print
-        print 'w = Whole frames'
-        print 's = Sub-frames tiles'
-        print 'f = File format '
+        print ' r = Range'
+        print ' w = Whole frames'
+        print ' s = Sub-frames tiles'
+        print ' f = File format '
         print
         print
         conf = read_conf_values()
-        framechoice = raw_input('Choose frame option: ')
+        framechoice = raw_input(' Choose frame option: ')
+
         if framechoice == 'm':
             break
+
+        if framechoice == 'r':
+            workq()
 
         if framechoice == 'w':
             clear()
@@ -1008,20 +1018,20 @@ def frames ():
             newconfig = conf.a_nm+conf.a+conf.z+conf.b_nm+conf.b+conf.z+conf.c_nm+conf.c+conf.z+conf.d_nm+conf.d+conf.z+conf.e_nm+conf.e+conf.z+conf.f_nm+f+conf.z+conf.g_nm+g+conf.z+conf.h_nm+conf.h+conf.z+conf.i_nm+conf.i+conf.z+conf.j_nm+conf.j+conf.z+conf.k_nm+conf.k+conf.z+conf.l_nm+conf.l
             confwrite(newconfig)
             print
-            print 'Changed to whole frame rendering'
+            print ' Changed to whole frame rendering'
             spacetime()
-
 
         if framechoice == 's':
             while True:
+                x = 'x'
                 clear()
                 print
-                print 'a = 64 8x8'
-                print 'b = 16 4x4'
-                print 'c = 4  2x2'
+                print ' a = 64 8x8'
+                print ' b = 16 4x4'
+                print ' c = 4  2x2'
                 print
                 print
-                tilechoice = raw_input('How many tiles will frames be split into? ')
+                tilechoice = raw_input(' How many tiles will frames be split into? ')
                 clear()              
                 if tilechoice =='a':
                     #new value
@@ -1031,7 +1041,7 @@ def frames ():
                     newconfig = conf.a_nm+conf.a+conf.z+conf.b_nm+conf.b+conf.z+conf.c_nm+conf.c+conf.z+conf.d_nm+conf.d+conf.z+conf.e_nm+conf.e+conf.z+conf.f_nm+f+conf.z+conf.g_nm+g+conf.z+conf.h_nm+conf.h+conf.z+conf.i_nm+conf.i+conf.z+conf.j_nm+conf.j+conf.z+conf.k_nm+conf.k+conf.z+conf.l_nm+conf.l
                     confwrite(newconfig)
                     print
-                    print 'Changed to sub-frame rendering'
+                    print ' Changed to sub-frame rendering with '+g+x+g,'tile size'
                     spacetime()
                     break
 
@@ -1043,7 +1053,7 @@ def frames ():
                     newconfig = conf.a_nm+conf.a+conf.z+conf.b_nm+conf.b+conf.z+conf.c_nm+conf.c+conf.z+conf.d_nm+conf.d+conf.z+conf.e_nm+conf.e+conf.z+conf.f_nm+f+conf.z+conf.g_nm+g+conf.z+conf.h_nm+conf.h+conf.z+conf.i_nm+conf.i+conf.z+conf.j_nm+conf.j+conf.z+conf.k_nm+conf.k+conf.z+conf.l_nm+conf.l
                     confwrite(newconfig)
                     print
-                    print 'Changed to sub-frame rendering'
+                    print ' Changed to sub-frame rendering with '+g+x+g,'tile size'
                     spacetime()
                     break
                 if tilechoice =='c':
@@ -1054,7 +1064,7 @@ def frames ():
                     newconfig = conf.a_nm+conf.a+conf.z+conf.b_nm+conf.b+conf.z+conf.c_nm+conf.c+conf.z+conf.d_nm+conf.d+conf.z+conf.e_nm+conf.e+conf.z+conf.f_nm+f+conf.z+conf.g_nm+g+conf.z+conf.h_nm+conf.h+conf.z+conf.i_nm+conf.i+conf.z+conf.j_nm+conf.j+conf.z+conf.k_nm+conf.k+conf.z+conf.l_nm+conf.l
                     confwrite(newconfig)
                     print
-                    print 'Changed to sub-frame rendering'
+                    print ' Changed to sub-frame rendering with '+g+x+g,'tile size'
                     spacetime()
                     break
 
@@ -1062,14 +1072,14 @@ def frames ():
             while True:
                 clear()
                 print
-                print 'p = PNG'
-                print 'e = EXR'
-                print 'j = JPEG'
-                print 't = TIFF'
-                print 'f = Format specified in uploaded .blend file'
+                print ' p = PNG'
+                print ' e = EXR'
+                print ' j = JPEG'
+                print ' t = TIFF'
+                print ' f = Format specified in uploaded .blend file'
                 print
                 print
-                formatchoice = raw_input('Enter the file format you wish frames to be rendered in? ')
+                formatchoice = raw_input(' Enter the file format you wish frames to be rendered in? ')
                 if formatchoice=='p':
                     #new values
                     j = 'PNG'
@@ -1081,7 +1091,7 @@ def frames ():
                     confwrite(newconfig)
                     clear()
                     print
-                    print 'Changed frame format to '+j
+                    print ' Changed frame format to '+j
                     spacetime()
                     break
 
@@ -1095,7 +1105,7 @@ def frames ():
                     confwrite(newconfig)
                     clear()
                     print
-                    print 'Changed frame format to '+j
+                    print ' Changed frame format to '+j
                     spacetime()
                     break
 
@@ -1109,7 +1119,7 @@ def frames ():
                     confwrite(newconfig)
                     clear()
                     print
-                    print 'Changed frame format to '+j
+                    print ' Changed frame format to '+j
                     spacetime()
                     break
 
@@ -1123,7 +1133,7 @@ def frames ():
                     confwrite(newconfig)
                     clear()
                     print
-                    print 'Changed frame format to '+j
+                    print ' Changed frame format to '+j
                     spacetime()
                     break
 
@@ -1137,7 +1147,7 @@ def frames ():
                     confwrite(newconfig)
                     clear()
                     print
-                    print 'Changed to format specified in uploaded .blend file'
+                    print ' Changed to format specified in uploaded .blend file'
                     spacetime()
                     break
 
@@ -1167,39 +1177,40 @@ blender -b *.blend -P subframe.py"""
     file.close()
 
 
-class read_conf_values():
-    from os.path import expanduser
-    home = expanduser("~")
-    os.chdir(home)
-    parser = ConfigParser.ConfigParser()
-    parser.readfp(FakeSecHead(open('.brenda.conf')))
-    a = parser.get('asection', 'INSTANCE_TYPE')
-    b = parser.get('asection', 'BLENDER_PROJECT')
-    c = parser.get('asection', 'WORK_QUEUE')
-    d = parser.get('asection', 'RENDER_OUTPUT')
-    e = parser.get('asection', 'DONE')
-    f = parser.get('asection', 'FRAME_OR_SUBFRAME')
-    g = parser.get('asection', 'TILE')
-    h = parser.get('asection', 'NUMBER_INSTANCES')
-    i = parser.get('asection', 'PRICE_BID')
-    j = parser.get('asection', 'FILE_TYPE')
-    k = parser.get('asection', 'START_FRAME')
-    l = parser.get('asection', 'END_FRAME')
-    #create new options
-    a_nm = 'INSTANCE_TYPE='
-    b_nm = 'BLENDER_PROJECT='
-    c_nm = 'WORK_QUEUE='
-    d_nm = 'RENDER_OUTPUT='
-    e_nm = 'DONE='
-    f_nm = 'FRAME_OR_SUBFRAME='
-    g_nm = 'TILE='
-    h_nm = 'NUMBER_INSTANCES='
-    i_nm = 'PRICE_BID='
-    j_nm = 'FILE_TYPE='
-    k_nm = 'START_FRAME='
-    l_nm = 'END_FRAME='
-    z = '\n'
-    os.chdir(bm)
+class read_conf_values(object):
+    def __init__(self):
+        from os.path import expanduser
+        home = expanduser("~")
+        os.chdir(home)
+        parser = ConfigParser.ConfigParser()
+        parser.readfp(FakeSecHead(open('.brenda.conf')))
+        self.a = parser.get('asection', 'INSTANCE_TYPE')
+        self.b = parser.get('asection', 'BLENDER_PROJECT')
+        self.c = parser.get('asection', 'WORK_QUEUE')
+        self.d = parser.get('asection', 'RENDER_OUTPUT')
+        self.e = parser.get('asection', 'DONE')
+        self.f = parser.get('asection', 'FRAME_OR_SUBFRAME')
+        self.g = parser.get('asection', 'TILE')
+        self.h = parser.get('asection', 'NUMBER_INSTANCES')
+        self.i = parser.get('asection', 'PRICE_BID')
+        self.j = parser.get('asection', 'FILE_TYPE')
+        self.k = parser.get('asection', 'START_FRAME')
+        self.l = parser.get('asection', 'END_FRAME')
+        #create new options
+        self.a_nm = 'INSTANCE_TYPE='
+        self.b_nm = 'BLENDER_PROJECT='
+        self.c_nm = 'WORK_QUEUE='
+        self.d_nm = 'RENDER_OUTPUT='
+        self.e_nm = 'DONE='
+        self.f_nm = 'FRAME_OR_SUBFRAME='
+        self.g_nm = 'TILE='
+        self.h_nm = 'NUMBER_INSTANCES='
+        self.i_nm = 'PRICE_BID='
+        self.j_nm = 'FILE_TYPE='
+        self.k_nm = 'START_FRAME='
+        self.l_nm = 'END_FRAME='
+        self.z = '\n'
+        os.chdir(bm)
 
 
 def confwrite(newconfig):
@@ -1217,53 +1228,13 @@ def resetworkqueue():
     os.chdir(bm)
     status = os.system(py+bw+rs)
     if status==0:
-        from os.path import expanduser
-        home = expanduser("~")
-        os.chdir(home)
-        parser = ConfigParser.ConfigParser()
-        parser.readfp(FakeSecHead(open('.brenda.conf')))
-        #find original values
-        a = parser.get('asection', 'INSTANCE_TYPE')
-        b = parser.get('asection', 'BLENDER_PROJECT')
-        c = parser.get('asection', 'WORK_QUEUE')
-        d = parser.get('asection', 'RENDER_OUTPUT')
-        e = parser.get('asection', 'DONE')
-        f = parser.get('asection', 'FRAME_OR_SUBFRAME')
-        g = parser.get('asection', 'TILE')
-        h = parser.get('asection', 'NUMBER_INSTANCES')
-        i = parser.get('asection', 'PRICE_BID')
-        j = parser.get('asection', 'FILE_TYPE')
-        k = parser.get('asection', 'START_FRAME')
-        l = parser.get('asection', 'END_FRAME')
-        #new values
-        k = '0'
-        l = '0'
-        #create new options
-        a_nm = 'INSTANCE_TYPE='
-        b_nm = 'BLENDER_PROJECT='
-        c_nm = 'WORK_QUEUE='
-        d_nm = 'RENDER_OUTPUT='
-        e_nm = 'DONE='
-        f_nm = 'FRAME_OR_SUBFRAME='
-        g_nm = 'TILE='
-        h_nm = 'NUMBER_INSTANCES='
-        i_nm = 'PRICE_BID='
-        j_nm = 'FILE_TYPE='
-        k_nm = 'START_FRAME='
-        l_nm = 'END_FRAME='
-        z = '\n'
-        #write to file
-        newconfig = a_nm+a+z+b_nm+b+z+c_nm+c+z+d_nm+d+z+e_nm+e+z+f_nm+f+z+g_nm+g+z+h_nm+h+z+i_nm+i+z+j_nm+j+z+k_nm+k+z+l_nm+l
-        file = open(".brenda.conf", "w")
-        file.write(newconfig)
-        file.close()
         print
-        print "Work queue has been reset"
+        print " Work queue has been reset"
     if status==1:
         print
         print
         print
-        print "There was a problem resetting work queue, please try waiting 60 seconds"
+        print " There was a problem resetting work queue, please try waiting 60 seconds"
     os.chdir(bm)
 
 
