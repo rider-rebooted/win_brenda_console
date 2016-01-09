@@ -2,26 +2,25 @@
 
 *WARNING, THIS IS MY FIRST PYTHON PROJECT AND IT MAY HAVE SERIOUS ISSUES WHICH COULD COST YOU MONEY.*
 
+09/01/2016 **UPDATE - Better workflow in setup menu**
+Workq build and instance initialisation now takes place in the job review menu option.
+
 04/01/2016 **UPDATE - Frame format now selectable**
 Frame formats such as JPEG etc. can now be selected.
 
 03/01/2016 **UPDATE - Sub-frame rendering now an option**
 Sub-frame rendering is now an option. Choose "frame settings" in the "setting up your farm" menu. Also there is a "job summary" available too. Various other improvements.
 
-31/12/2015 **UPDATE - AMIs now selectable**
-List of recommended AMIs is now selectable. Also, if I've uploaded a newer version of win_brenda_console than the one you're running, a notification will pop up at the start.
+Features
 
-30/12/2015 **UPDATE - Gives you a list of compatible AMIs when updating**
-When entering a new AMI name you are now presented with an up to date list of compatible options (scraped from a text file on my website). Also a file is modified at startup which makes win_brenda_console more compatible with newer AMIs.
+* No command lines or manually changing configuration files
+* Select project in gui file browser (zips, uploads and changes config file automatically).
+* Regular or one-time frame download to folder selected in gui folder browser.
+* Change AMI automatically from up to date suggestions (or enter your own).
+* Select frame formats or use the format specified in the uploaded .blend project file.
+* Notification at start if I've uploaded a newer version of win_brenda_console than the one you are using.
+* frame or sub-frame rendering with tilesize options
 
-28/12/2015 **UPDATE - ability to change AMI**
-You can now change the AMI used by instances so that projects created with newer Blender versions can be rendered. Commands sent from cancel menu have their status checked and failure or sucess message is given.
-
-17/12/2015 **UPDATE - option to create a new project**
-You can now create a new project automatically by selecting a .blend file. Win_brenda_console will delete all the files from your project and frame buckets, zip up the file, upload it and then make changes to the brenda.conf file so you can start rendering immediately.
-
-12/12/2015 **UPDATE - option to download frames**
-You can now download frames automatically by selecting a download folder. You can also set it to download frames every n minutes so save a large final download.
 
 
 Simple console for operating James Yonan's [Brenda](https://github.com/jamesyonan/brenda) for Blender on Windows without command lines. Brenda is an open source piece of software which lets you render Blender projects with very low cost (compared to render farms) AWS Amazon computing instances.
