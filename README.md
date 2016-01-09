@@ -9,7 +9,7 @@ Workq build and instance initialisation now takes place in the job review menu o
 Frame formats such as JPEG etc. can now be selected.
 
 03/01/2016 **UPDATE - Sub-frame rendering now an option**
-Sub-frame rendering is now an option. Choose "frame settings" in the "setting up your farm" menu. Also there is a "job summary" available too. Various other improvements.
+Choose "frame settings" in the "setting up your farm" menu. Also there is a "job summary" available too. Various other improvements.
 
 Features
 
