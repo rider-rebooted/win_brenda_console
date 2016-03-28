@@ -13,7 +13,7 @@ import urllib
 import sys
 
 
-thisver = 201601091430
+thisver = 201603281830
 
 def spacetime ():
     time.sleep(2)
@@ -109,14 +109,14 @@ def mainmenu ():
 
 def setupmenuoptions ():
     print 
-    print " m = Go to main menu"
+    print " m = Go to previous menu"
     print
     print
     print " a = AMI"
     print " p = Project"
     print " f = Frames"
     print " i = Instances"
-    print " r = Review details"
+    print " r = Review details with option to start job"
     print
     print
 
@@ -594,7 +594,7 @@ def setupmenu ():
 
 def monmenuoptions ():
     print 
-    print " m = Go to main menu"
+    print " m = Go to previous menu"
     print
     print
     print " w = Work queue status"
@@ -718,7 +718,7 @@ def monmenu ():
 
 def downmenuoptions ():
     print 
-    print " m = Go to main menu"
+    print " m = Go to previous menu"
     print
     print
     print " o = One time download to local folder"
@@ -820,7 +820,7 @@ def downmenu ():
 
 def cancelmenuoptions ():
     print 
-    print " m = Go to main menu"
+    print " m = Go to previous menu"
     print
     print
     print " r = Reset work queue"
@@ -965,7 +965,7 @@ def instancemenu ():
     while True:
         clear()
         print
-        print ' m = Go to main menu'
+        print ' m = Go to previous menu'
         print
         print
         print ' p = Prices'
@@ -991,7 +991,7 @@ def frames ():
     while True:
         clear()
         print
-        print ' m = Go to main menu'
+        print ' m = Go to previous menu'
         print
         print
         print ' r = Range'
