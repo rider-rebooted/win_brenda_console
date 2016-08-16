@@ -2,6 +2,9 @@
 
 *WARNING, THIS IS MY FIRST PYTHON PROJECT AND IT MAY HAVE SERIOUS ISSUES WHICH COULD COST YOU MONEY.*
 
+16/08/2016
+Option to empty frame and project buckets from the 'Canceling and resetting your farm' menu.
+
 09/01/2016 **UPDATE - Better workflow in setup menu**
 Workq build and instance initialisation now takes place in the job review menu option.
 
