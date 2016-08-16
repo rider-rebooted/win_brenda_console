@@ -13,7 +13,7 @@ import urllib
 import sys
 
 
-thisver = 201603281830
+thisver = 201608162155
 
 def spacetime ():
     time.sleep(2)
@@ -49,7 +49,7 @@ ut = 'uptime '
 st = 'status'
 pf = 'perf'
 tc = 'cat task-count'
-tl = 'tail log'
+tl = 'tail /mnt/brenda/log'
 pru = 'prune '
 smlt = '-t '
 dflag = '-d '
@@ -220,7 +220,7 @@ AMI_ID="""
 def nproj ():
     while True:
         print
-        print " Select your Blender project file (must be packed)..."
+        print " Select your Blender project file (texture files etc. must be packed)..."
         time.sleep(1)
         root = Tk()
         root.withdraw()
@@ -481,7 +481,7 @@ def reviewjob():
                     print
                     if status == 1:
                         print '\n'
-                        print ' There was an error initiating Instances'
+                        print ' There was an error initiating Instances. Try a C3 instance type for this AMI'
                         spacetime()
                         resetworkqueue()
                         print
@@ -504,7 +504,7 @@ def instance():
     while True:
         clear()
         print
-        print " a = c1.xlarge"
+        print " a = c1.xlarge (some newer AMIs not supported)"
         print " b = c3.large"
         print " c = c3.xlarge"
         print " d = c3.2xlarge"
@@ -826,6 +826,7 @@ def cancelmenuoptions ():
     print " r = Reset work queue"
     print " s = Stop all running instances"
     print " c = Cancel pending spot requests"
+    print " e = Empty frame and project buckets"
     print
     print
 
@@ -862,6 +863,7 @@ def cancelmenu ():
             print
             print
             exit = raw_input(' Enter any key to return ')
+      
         if canceltask=='c':  
             clear()
             print
@@ -874,10 +876,89 @@ def cancelmenu ():
                 print
                 print
                 print
-                print " There was a problem, please try an alternative method" 
+                print " There was a problem, please try an alternative method"
             print
             print
             exit = raw_input(' Enter any key to return ')
+    
+        if canceltask=='e':
+            clear()
+            print
+            econf = raw_input(' Would you like to empty frame and project buckets, y or n? ')  
+            if econf == 'n':
+                clear()
+                print
+                print ' frame and project buckets have not been emptied'
+                spacetime()     
+            if econf =='y':
+                clear()
+                print
+                print ' This will delete all files in your frame and project buckets'
+                print 
+                print
+                doubleeconf = raw_input(' Are you sure, y or n? ')
+                if doubleeconf =='n':
+                    clear()
+                    print
+                    print ' frame and project buckets have not been emptied'
+                    spacetime()
+                if doubleeconf == 'y':
+                    clear()
+                    #gets various variables
+                    from os.path import expanduser
+                    home = expanduser("~")
+                    os.chdir(home)
+                    parser = ConfigParser.ConfigParser()
+                    parser.readfp(FakeSecHead(open('.brenda.conf')))
+                    #find original values
+                    a = parser.get('asection', 'INSTANCE_TYPE')
+                    b = parser.get('asection', 'BLENDER_PROJECT')
+                    c = parser.get('asection', 'WORK_QUEUE')
+                    d = parser.get('asection', 'RENDER_OUTPUT')
+                    e = parser.get('asection', 'DONE')
+                    f = parser.get('asection', 'FRAME_OR_SUBFRAME')
+                    g = parser.get('asection', 'TILE')
+                    h = parser.get('asection', 'NUMBER_INSTANCES')
+                    i = parser.get('asection', 'PRICE_BID')
+                    j = parser.get('asection', 'FILE_TYPE')
+                    k = parser.get('asection', 'START_FRAME')
+                    l = parser.get('asection', 'END_FRAME')
+
+                    #create new options
+                    a_nm = 'INSTANCE_TYPE='
+                    b_nm = 'BLENDER_PROJECT='
+                    c_nm = 'WORK_QUEUE='
+                    d_nm = 'RENDER_OUTPUT='
+                    e_nm = 'DONE='
+                    f_nm = 'FRAME_OR_SUBFRAME='
+                    g_nm = 'TILE='
+                    h_nm = 'NUMBER_INSTANCES='
+                    i_nm = 'PRICE_BID='
+                    j_nm = 'FILE_TYPE='
+                    k_nm = 'START_FRAME='
+                    l_nm = 'END_FRAME='
+                    z = '\n'
+
+                    projbucketname = urlparse.urlsplit(b).netloc
+                    projbucketpath = 's3://'+projbucketname
+
+                    #changes to s3cmd working directory
+                    os.chdir(ps)
+
+                    #deletes all old project files
+                    print
+                    status = os.system('python s3cmd del -r -f '+projbucketpath)
+                    clear()
+
+                    #deletes all old frames
+                    print
+                    status = os.system('python s3cmd del -r -f '+d)
+                    clear()
+                    print
+                    print " Files in project and frame buckets have been deleted"
+                    spacetime()
+
+
 
 #This recreates the original "s3cmd.ini" file by making a duplicate of the ".s3cmd" file created by win_brenda_installer, renaming it to "s3cmd.ini" and moving it back
 def inidup ():
