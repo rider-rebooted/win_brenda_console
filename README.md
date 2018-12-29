@@ -4,24 +4,24 @@
 
 29/12/2018\
 version : 201812291155\
-**UPDATE - Fixes errors which caused it to crash immediatly upon starting**
+**UPDATE - Fixes errors which caused it to crash immediatly upon starting**\
 Now pulls information from a file in my Dropbox instead of a non-exisiting file on my old website.
 
 16/08/2016\
 version : 201608162155\
-**UPDATE - Empty frame and project buckets**
+**UPDATE - Empty frame and project buckets**\
 Option to empty frame and project buckets from the 'Canceling and resetting your farm' menu.
 
 09/01/2016\
-**UPDATE - Better workflow in setup menu**
+**UPDATE - Better workflow in setup menu**\
 Workq build and instance initialisation now takes place in the job review menu option.
 
 04/01/2016\
-**UPDATE - Frame format now selectable**
+**UPDATE - Frame format now selectable**\
 Frame formats such as JPEG etc. can now be selected.
 
 03/01/2016\
-**UPDATE - Sub-frame rendering now an option**
+**UPDATE - Sub-frame rendering now an option**\
 Choose "frame settings" in the "setting up your farm" menu. Also there is a "job summary" available too. Various other improvements.
 
 Simple console for operating James Yonan's [Brenda](https://github.com/jamesyonan/brenda) for Blender on Windows without command lines. Brenda is an open source piece of software which lets you render Blender projects with very low cost (compared to render farms) AWS Amazon computing instances.
