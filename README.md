@@ -2,6 +2,10 @@
 
 *WARNING, THIS IS MY FIRST PYTHON PROJECT AND IT MAY HAVE SERIOUS ISSUES WHICH COULD COST YOU MONEY.*
 
+29/12/2018 **UPDATE - Fixes errors which cause it to crash immediatly upon starting**
+**version 201812291155**
+Now pulls information from a file in my Dropbox instead of a non-exisiting file on my old website.
+
 16/08/2016 **UPDATE - Empty frame and project buckets**
 Option to empty frame and project buckets from the 'Canceling and resetting your farm' menu.
 
