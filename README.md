@@ -4,7 +4,7 @@
 
 29/12/2018\
 version : 201812291155\
-**UPDATE - Fixes errors which cause it to crash immediatly upon starting**
+**UPDATE - Fixes errors which caused it to crash immediatly upon starting**
 Now pulls information from a file in my Dropbox instead of a non-exisiting file on my old website.
 
 16/08/2016\
