@@ -1,6 +1,6 @@
 # win_brenda_console (beta) FIXED
 
-Although this is now fixed, for now, I reccomend using https://github.com/sundriftproductions/better-brenda
+Although this version is now fixed, for now, I recommend using [Better Brenda](https://github.com/sundriftproductions/better-brenda)
 
 *WARNING, THIS IS MY FIRST PYTHON PROJECT AND IT MAY HAVE SERIOUS ISSUES WHICH COULD COST YOU MONEY.*
 
