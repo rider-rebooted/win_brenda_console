@@ -1,4 +1,4 @@
-# win_brenda_console (beta)
+# win_brenda_console (beta) FIXED
 
 *WARNING, THIS IS MY FIRST PYTHON PROJECT AND IT MAY HAVE SERIOUS ISSUES WHICH COULD COST YOU MONEY.*
 
